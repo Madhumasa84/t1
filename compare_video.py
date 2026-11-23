@@ -3,6 +3,7 @@
 import argparse
 from collections import Counter
 from contextlib import nullcontext
+from copy import copy
 import json
 import math
 import os
@@ -60,6 +61,14 @@ def new_tracker():
 def predict_frame(model, frame, class_ids, confidence):
     return model.predict(frame, imgsz=480, conf=confidence, classes=class_ids,
                          device="cpu", verbose=False)[0]
+
+
+def plot_detections(result):
+    """Show a generic table label for COCO's only table category."""
+    view = copy(result)
+    view.names = {index: "table" if name == "dining table" else name
+                  for index, name in result.names.items()}
+    return view.plot()
 
 
 def track_people(frame, result, tracker):
@@ -223,7 +232,7 @@ def compare(source, output, models, *, pipeline=False, preview=False, detector=P
                                 display_ids = preview_ids(track_ids, display_ids)
                             if pipeline:
                                 person_id = next(index for index, label in result.names.items() if label == "person")
-                                background = strong[strong.boxes.cls != person_id].plot()
+                                background = plot_detections(strong[strong.boxes.cls != person_id])
                             active_id_counts[len(track_ids)] += 1
                             detected_without_track += bool(len(gate_people) and not track_ids)
                             for track_id in track_ids.values():
@@ -247,7 +256,7 @@ def compare(source, output, models, *, pipeline=False, preview=False, detector=P
                             pose_counts["pose_only_frames"] += bool(len(result.boxes) and not len(gate_people))
                             views.append(("Tracked posture", view))
                         elif not pipeline:
-                            views.append((name, strong.plot()))
+                            views.append((name, plot_detections(strong)))
                     if not pipeline:
                         for index, (label, image) in enumerate(views):
                             row, column = divmod(index, 2)

@@ -42,13 +42,13 @@ class CameraPreview:
         self.display_ids = video.preview_ids(track_ids, self.display_ids)
         person_id = next(index for index, name in detection.names.items() if name == "person")
         furniture = detection[(detection.boxes.cls != person_id) & (detection.boxes.conf >= video.DETECTION_CONFIDENCE)]
+        annotated = video.plot_detections(furniture)
         if len(people) == 0:
             self.posture.update({}, now)
-            annotated = furniture.plot()
         else:
             joints = video.predict_frame(pose, frame, pose_classes, video.DETECTION_CONFIDENCE)
             annotated, *_ = video.gated_pose_view(
-                furniture.plot(), people, joints, track_ids, self.posture, now, self.display_ids
+                annotated, people, joints, track_ids, self.posture, now, self.display_ids
             )
         self.last_frame = monotonic()
         return annotated

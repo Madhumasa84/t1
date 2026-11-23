@@ -160,3 +160,16 @@ def test_preview_numbers_follow_visible_tracks(monkeypatch):
     *_, postures = video.gated_pose_view(frame, people, pose, {0: 7, 1: 5}, video.PostureHold(1), 0, both)
     assert labels == ["ID 2 - posture unclear", "ID 1 - posture unclear"]
     assert set(postures) == {5, 7}
+
+
+def test_table_overlay_keeps_original_model_category(monkeypatch):
+    frame = np.zeros((100, 100, 3), dtype=np.uint8)
+    detections = result(frame, [[0, 0, 80, 80, .52, 0]])
+    detections.names = {0: "dining table"}
+    labels = []
+    def capture_label(self, box, label, **kwargs):
+        labels.append(label)
+    monkeypatch.setattr(video.Annotator, "box_label", capture_label)
+    video.plot_detections(detections)
+    assert labels == ["table 0.52"]
+    assert detections.names == {0: "dining table"}
