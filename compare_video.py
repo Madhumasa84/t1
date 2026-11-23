@@ -74,7 +74,18 @@ def track_people(frame, result, tracker):
     return candidates[kept], track_ids
 
 
-def gated_pose_view(frame, people, pose, track_ids, posture_hold, frame_index):
+def preview_ids(track_ids, previous):
+    """Keep visible tracks' numbers and give new tracks the lowest free number."""
+    current = {track: previous[track] for track in track_ids.values() if track in previous}
+    used = set(current.values())
+    available = (number for number in range(1, len(track_ids) + 1) if number not in used)
+    for track in track_ids.values():
+        if track not in current:
+            current[track] = next(available)
+    return current
+
+
+def gated_pose_view(frame, people, pose, track_ids, posture_hold, frame_index, display_ids=None):
     """Match each usable pose to a distinct detector person box."""
     confidence = pose.keypoints.conf
     usable = (confidence >= JOINT_CONFIDENCE).sum(dim=1) >= MIN_JOINTS
@@ -107,11 +118,18 @@ def gated_pose_view(frame, people, pose, track_ids, posture_hold, frame_index):
     unclear_people = 0
     for index, box in enumerate(people.boxes.xyxy.int().tolist()):
         track_id = track_ids.get(index)
-        label = f"Track {track_id}" if track_id is not None else "Untracked"
+        number = track_id
+        label = "Untracked"
+        if track_id is not None:
+            if display_ids is None:
+                label = f"Track {track_id}"
+            else:
+                number = display_ids[track_id]
+                label = f"ID {number}"
         posture = postures.get(track_id, UNCLEAR)
         unclear_people += posture == UNCLEAR
         label += f" - {posture}" if posture != UNCLEAR else " - posture unclear"
-        color = colors(track_id, bgr=True) if track_id is not None else (0, 215, 255)
+        color = colors(number, bgr=True) if number is not None else (0, 215, 255)
         annotator.box_label(box, label, color=color)
     return view, len(poses), len(matches), unclear_people, postures
 
@@ -167,6 +185,7 @@ def compare(source, output, models, *, pipeline=False, preview=False, detector=P
                                     "suppressed_usable_pose_boxes", "pose_only_frames"), 0)
         frames = 0
         tracker = new_tracker()
+        display_ids = {} if preview else None
         # The live preview uses elapsed seconds because processing can run below camera FPS.
         posture_hold = PostureHold(1 if preview else fps)
         started = monotonic()
@@ -200,6 +219,8 @@ def compare(source, output, models, *, pipeline=False, preview=False, detector=P
                             furniture[name].update(labels - {"person"})
                         if name == detector:
                             gate_people, track_ids = track_people(frame, result, tracker)
+                            if preview:
+                                display_ids = preview_ids(track_ids, display_ids)
                             if pipeline:
                                 person_id = next(index for index, label in result.names.items() if label == "person")
                                 background = strong[strong.boxes.cls != person_id].plot()
@@ -214,7 +235,7 @@ def compare(source, output, models, *, pipeline=False, preview=False, detector=P
                         if name == MODELS[-1]:
                             view, usable, shown, unclear, postures = gated_pose_view(
                                 background if pipeline else frame, gate_people, result, track_ids, posture_hold,
-                                observed_at if preview else frames,
+                                observed_at if preview else frames, display_ids,
                             )
                             for track_id, posture in postures.items():
                                 posture_counts.setdefault(track_id, Counter())[posture] += 1

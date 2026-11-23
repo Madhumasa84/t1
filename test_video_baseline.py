@@ -139,3 +139,24 @@ def test_track_survives_pose_change_confidence_dip_and_short_gap():
     tracks([distant])
     different = tracks([distant])
     assert len(different) == 1 and different != original
+
+
+def test_preview_numbers_follow_visible_tracks(monkeypatch):
+    first = video.preview_ids({0: 5}, {})
+    both = video.preview_ids({0: 7, 1: 5}, first)
+    assert both == {5: 1, 7: 2}
+    remaining = video.preview_ids({0: 7}, both)
+    assert remaining == {7: 2}
+    assert video.preview_ids({0: 7, 1: 12}, remaining) == {7: 2, 12: 1}
+    assert video.preview_ids({}, both) == {}
+
+    labels = []
+    def capture_label(self, box, label, **kwargs):
+        labels.append(label)
+    monkeypatch.setattr(video.Annotator, "box_label", capture_label)
+    frame = np.zeros((100, 100, 3), dtype=np.uint8)
+    people = result(frame, [[0, 0, 40, 90, .9, 0], [50, 0, 90, 90, .9, 0]])
+    pose = result(frame, [], np.empty((0, 17, 3), np.float32))
+    *_, postures = video.gated_pose_view(frame, people, pose, {0: 7, 1: 5}, video.PostureHold(1), 0, both)
+    assert labels == ["ID 2 - posture unclear", "ID 1 - posture unclear"]
+    assert set(postures) == {5, 7}
