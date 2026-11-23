@@ -13,7 +13,7 @@ The browser preview and saved-video processor should use the same event rules. F
 
 ## Stage 0 — Get a dependable starting point
 
-- [ ] `fix/video-baseline`
+- [x] `fix/video-baseline`
 
 Confirm we have usable Git history, install the model dependencies, and locate the weights. Fix the four issues from the project review so they don’t interfere with later tests.
 
@@ -33,7 +33,7 @@ done
 .venv/bin/python -m pytest -q test_video_baseline.py
 ```
 
-**Open merge check.** On the verification host, OpenCV reported zero video devices and could not read a frame from camera 0. From a desktop terminal with a connected webcam, run `.venv/bin/python compare_video.py --camera 0`, confirm that the annotated picture continues updating after the frame-100 message, and press Q. Record the result here before merging.
+**Accepted development check.** The household tested the live laptop webcam through the browser. The final baseline suite passed 17 tests, including 101 simulated native-camera frames. We agreed to defer the physical native-camera check to production camera commissioning. At that point, verify the real feed continues updating past frame 100.
 
 ## Stage 1 — Notice when the room is empty
 
