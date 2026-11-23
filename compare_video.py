@@ -24,8 +24,10 @@ from ultralytics.utils.metrics import box_iou
 from ultralytics.utils.plotting import Annotator, colors
 
 if __package__:
+    from .presence import DEFAULT_GRACE, LIVE_GAP_SECONDS, UNAVAILABLE, RoomPresence, grace_seconds
     from .posture import HOLD_SECONDS, JOINT_CONFIDENCE, UNCLEAR, PostureHold, estimate_posture
 else:
+    from presence import DEFAULT_GRACE, LIVE_GAP_SECONDS, UNAVAILABLE, RoomPresence, grace_seconds
     from posture import HOLD_SECONDS, JOINT_CONFIDENCE, UNCLEAR, PostureHold, estimate_posture
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -161,7 +163,8 @@ def check_output_paths(sources, output, pipeline):
                 raise ValueError(f"Output would overwrite an input: {path}")
 
 
-def compare(source, output, models, *, pipeline=False, preview=False, detector=POSE_GATE_MODEL):
+def compare(source, output, models, *, pipeline=False, preview=False, detector=POSE_GATE_MODEL,
+            vacancy_grace=DEFAULT_GRACE):
     camera = isinstance(source, int)
     video = temporary = report_path = None
     if not preview:
@@ -181,7 +184,7 @@ def compare(source, output, models, *, pipeline=False, preview=False, detector=P
         if preview:
             cv2.namedWindow(PREVIEW_WINDOW, cv2.WINDOW_NORMAL)
             window_open = True
-        elif not math.isfinite(fps) or fps <= 0:
+        if not camera and (not math.isfinite(fps) or fps <= 0):
             raise ValueError(f"Cannot read the frame rate from {source}")
         height, width = frame.shape[:2]
         width, height = 640, max(2, 2 * round(height * 640 / width / 2))
@@ -193,6 +196,9 @@ def compare(source, output, models, *, pipeline=False, preview=False, detector=P
                                     "posture_unclear_frames", "suppressed_pose_boxes",
                                     "suppressed_usable_pose_boxes", "pose_only_frames"), 0)
         frames = 0
+        presence = RoomPresence(vacancy_grace)
+        presence_events = []
+        last_timestamp = -1.0
         tracker = new_tracker()
         display_ids = {} if preview else None
         # The live preview uses elapsed seconds because processing can run below camera FPS.
@@ -215,6 +221,18 @@ def compare(source, output, models, *, pipeline=False, preview=False, detector=P
             with sink as encoder:
                 while ok:
                     observed_at = monotonic()
+                    if camera:
+                        timestamp = observed_at - started
+                    else:
+                        timestamp = capture.get(cv2.CAP_PROP_POS_MSEC) / 1000
+                        if not math.isfinite(timestamp) or timestamp < 0 or timestamp <= last_timestamp:
+                            timestamp = last_timestamp + 1 / fps if frames else 0.0
+                    gap_limit = LIVE_GAP_SECONDS if camera else max(LIVE_GAP_SECONDS, 2 / fps)
+                    if frames and timestamp - last_timestamp > gap_limit:
+                        presence.disconnect()
+                        if not preview:
+                            presence_events.append({"seconds": last_timestamp + gap_limit, "state": UNAVAILABLE})
+                    last_timestamp = timestamp
                     frame = cv2.resize(frame, (width, height), interpolation=cv2.INTER_AREA)
                     views = [("Original", frame)]
                     for name, model, class_ids in models:
@@ -228,6 +246,10 @@ def compare(source, output, models, *, pipeline=False, preview=False, detector=P
                             furniture[name].update(labels - {"person"})
                         if name == detector:
                             gate_people, track_ids = track_people(frame, result, tracker)
+                            previous_state = presence.state
+                            presence.observe(len(gate_people), timestamp)
+                            if not preview and presence.state != previous_state:
+                                presence_events.append({"seconds": timestamp, "state": presence.state})
                             if preview:
                                 display_ids = preview_ids(track_ids, display_ids)
                             if pipeline:
@@ -254,6 +276,10 @@ def compare(source, output, models, *, pipeline=False, preview=False, detector=P
                             pose_counts["suppressed_pose_boxes"] += len(result.boxes) - shown
                             pose_counts["suppressed_usable_pose_boxes"] += usable - shown
                             pose_counts["pose_only_frames"] += bool(len(result.boxes) and not len(gate_people))
+                            cv2.putText(view, presence.state, (8, height - 12), cv2.FONT_HERSHEY_SIMPLEX,
+                                        .65, (0, 0, 0), 4, cv2.LINE_AA)
+                            cv2.putText(view, presence.state, (8, height - 12), cv2.FONT_HERSHEY_SIMPLEX,
+                                        .65, (255, 255, 255), 1, cv2.LINE_AA)
                             views.append(("Tracked posture", view))
                         elif not pipeline:
                             views.append((name, plot_detections(strong)))
@@ -282,6 +308,9 @@ def compare(source, output, models, *, pipeline=False, preview=False, detector=P
                         source_name = f"camera {source}" if camera else source.name
                         print(f"{source_name}: processed {frames} frames", flush=True)
                     ok, frame = capture.read()
+                    if camera and not ok:
+                        presence.disconnect()
+                        print(presence.state, flush=True)
                 if encoder is not None:
                     encoder.stdin.close()
                     if encoder.wait():
@@ -303,6 +332,7 @@ def compare(source, output, models, *, pipeline=False, preview=False, detector=P
         "output": video.name,
         "frames": frames,
         "fps": fps,
+        "room_presence": {"vacancy_grace_seconds": vacancy_grace, "events": presence_events},
         "person_prediction_frames": person_frames,
         "tracking": {
             "detector": detector,
@@ -335,6 +365,7 @@ def main():
     parser.add_argument("--pipeline", action="store_true", help="Write one annotated view using YOLO26s and pose")
     parser.add_argument("--detector", choices=MODELS[:2], default=POSE_GATE_MODEL,
                         help="Person and furniture detector for single-view processing")
+    parser.add_argument("--vacancy-grace", type=grace_seconds, default=DEFAULT_GRACE, metavar="SECONDS")
     args = parser.parse_args()
     preview = args.preview or args.camera is not None
     if args.camera is not None and (args.camera < 0 or args.videos):
@@ -366,7 +397,8 @@ def main():
     sources = [args.camera] if args.camera is not None else args.videos
     for source in sources:
         try:
-            compare(source, output, models, pipeline=pipeline, preview=preview, detector=args.detector)
+            compare(source, output, models, pipeline=pipeline, preview=preview, detector=args.detector,
+                    vacancy_grace=args.vacancy_grace)
         except ValueError as error:
             parser.error(str(error))
 

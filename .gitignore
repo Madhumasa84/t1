@@ -14,3 +14,5 @@ __pycache__/
 /coco2017_comparison/
 /coco50_predictions*/
 /runs/
+
+room-presence.sqlite3*
