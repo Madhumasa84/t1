@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Home Tower Camera</title>
+<style>
+  :root { color-scheme: dark; font-family: system-ui, sans-serif; background: #101519; color: #eff4f2; }
+  body { max-width: 960px; padding: 20px; margin: 32px auto; }
+  header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+  h1 { font-size: clamp(1.5rem, 4vw, 2.25rem); margin: 0; }
+  button { font: inherit; font-weight: 650; padding: .65rem 1.1rem; border: 0; border-radius: .45rem; cursor: pointer; }
+  #start { background: #92e7cc; color: #102720; }
+  #stop { background: #2a343a; color: #eff4f2; }
+  button:disabled { opacity: .45; cursor: default; }
+  #status { color: #b5c8c4; margin-bottom: 16px; }
+  .screen { background: #080b0d; border: 1px solid #39464b; border-radius: .65rem; overflow: hidden; }
+  #result { display: block; width: 100%; max-height: 75vh; object-fit: contain; }
+  #result[hidden] { display: none; }
+  #placeholder { padding: 5rem 1rem; text-align: center; color: #b5c8c4; }
+</style>
+<main>
+  <header>
+    <h1>Home Tower Camera</h1>
+    <div>
+      <button id="start">Start camera</button>
+      <button id="stop" disabled>Stop</button>
+    </div>
+  </header>
+  <p id="status" role="status">Allow camera access in your browser to start the preview.</p>
+  <div class="screen">
+    <div id="placeholder">Camera preview will appear here.</div>
+    <img id="result" alt="Camera preview with person IDs, skeletons, posture, and furniture labels" hidden>
+  </div>
+  <video id="source" autoplay playsinline muted hidden></video>
+</main>
+<script>
+  const start = document.querySelector('#start');
+  const stop = document.querySelector('#stop');
+  const status = document.querySelector('#status');
+  const source = document.querySelector('#source');
+  const result = document.querySelector('#result');
+  const placeholder = document.querySelector('#placeholder');
+  const canvas = document.createElement('canvas');
+  const context = canvas.getContext('2d', {alpha: false});
+  let active = null;
+  let imageURL = null;
+
+  function end(message) {
+    if (!active) return;
+    active.controller.abort();
+    active.stream?.getTracks().forEach(track => track.stop());
+    active = null;
+    source.srcObject = null;
+    result.removeAttribute('src');
+    result.hidden = true;
+    placeholder.hidden = false;
+    if (imageURL) URL.revokeObjectURL(imageURL);
+    imageURL = null;
+    status.textContent = message;
+    start.disabled = false;
+    stop.disabled = true;
+  }
+
+  async function preview() {
+    const run = {controller: new AbortController(), stream: null};
+    active = run;
+    start.disabled = true;
+    stop.disabled = false;
+    status.textContent = 'Waiting for camera permission…';
+    try {
+      if (!navigator.mediaDevices?.getUserMedia) {
+        throw new Error('Open the preview from localhost in your Windows browser.');
+      }
+      const session = crypto.randomUUID();
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: {width: {ideal: 640}, height: {ideal: 480}}, audio: false,
+      });
+      if (active !== run) {
+        stream.getTracks().forEach(track => track.stop());
+        return;
+      }
+      run.stream = stream;
+      stream.getVideoTracks().forEach(track => track.addEventListener('ended', () => {
+        if (active === run) end('Camera connection ended.');
+      }));
+      source.srcObject = stream;
+      await source.play();
+      if (active !== run) return;
+      const scale = 640 / Math.max(source.videoWidth, source.videoHeight);
+      canvas.width = Math.max(1, Math.round(source.videoWidth * scale));
+      canvas.height = Math.max(1, Math.round(source.videoHeight * scale));
+      status.textContent = 'Processing the first frame…';
+      let rate = 0;
+      while (active === run) {
+        const started = performance.now();
+        context.drawImage(source, 0, 0, canvas.width, canvas.height);
+        const jpeg = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', .85));
+        if (!jpeg) throw new Error('Could not read the camera frame.');
+        const response = await fetch('/frame', {
+          method: 'POST', body: jpeg, signal: run.controller.signal,
+          headers: {'Content-Type': 'image/jpeg', 'X-Camera-Session': session},
+        });
+        if (!response.ok) throw new Error('The preview server returned HTTP ' + response.status + '.');
+        const annotated = await response.blob();
+        if (active !== run) break;
+        if (imageURL) URL.revokeObjectURL(imageURL);
+        imageURL = URL.createObjectURL(annotated);
+        result.src = imageURL;
+        result.hidden = false;
+        placeholder.hidden = true;
+        const currentRate = 1000 / Math.max(1, performance.now() - started);
+        rate = rate ? .8 * rate + .2 * currentRate : currentRate;
+        status.textContent = 'Live preview · ' + rate.toFixed(1) + ' processed FPS';
+        await new Promise(requestAnimationFrame);
+      }
+    } catch (error) {
+      if (active === run) end(error.message);
+    }
+  }
+
+  start.onclick = preview;
+  stop.onclick = () => end('Camera stopped.');
+  addEventListener('pagehide', () => end('Camera stopped.'));
+</script>
+</html>
