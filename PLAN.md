@@ -19,6 +19,22 @@ Confirm we have usable Git history, install the model dependencies, and locate t
 
 **Ready to merge when** the native camera preview runs past frame 100, a batch with an input/output collision is rejected before any file is written, the unclear-posture count matches labeled frames, and the browser server starts directly and as a module. Run a real-camera smoke test and record the command and result.
 
+**Branch verification.** On Python 3.10.16 with CPU inference, all 13 regression tests passed. A simulated camera ran through frame 101. A five-frame excerpt from `videos/v1.mp4` produced five matched poses with five unclear labels during the posture hold, and the JSON report counted five unclear frames. Both server launch modes served the page and returned an annotated JPEG using the real detector and pose weights.
+
+To repeat the checks on Linux, install FFmpeg with its H.264 encoder, then run these commands from the `t1` checkout. The tested runtime uses the official Ultralytics v8.4.0 release weights in the sibling `weights` directory.
+
+```bash
+uv venv --python 3.10 .venv
+uv pip install --python .venv/bin/python --torch-backend cpu ultralytics==8.4.216 scipy==1.15.3 lap==0.5.14 pytest
+mkdir -p ../weights
+for model in yolo26s yolo11n-pose; do
+  curl --fail --location --output "../weights/$model.pt" "https://github.com/ultralytics/assets/releases/download/v8.4.0/$model.pt"
+done
+.venv/bin/python -m pytest -q test_video_baseline.py
+```
+
+**Open merge check.** On the verification host, OpenCV reported zero video devices and could not read a frame from camera 0. From a desktop terminal with a connected webcam, run `.venv/bin/python compare_video.py --camera 0`, confirm that the annotated picture continues updating after the frame-100 message, and press Q. Record the result here before merging.
+
 ## Stage 1 — Notice when the room is empty
 
 - [ ] `feature/room-presence`

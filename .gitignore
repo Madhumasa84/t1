@@ -1,0 +1,16 @@
+.venv/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+*.pt
+*.mp4
+*:Zone.Identifier
+/live video i tested/
+/videos/
+/video_comparison_gated/
+/video_posture/
+/video_tracking/
+/pipeline_results/
+/coco2017_comparison/
+/coco50_predictions*/
+/runs/

@@ -102,18 +102,42 @@ def gated_pose_view(frame, people, pose, track_ids, posture_hold, frame_index):
             )
     postures = posture_hold.update(raw_postures, frame_index)
     annotator = Annotator(view, line_width=2)
+    unclear_people = 0
     for index, box in enumerate(people.boxes.xyxy.int().tolist()):
         track_id = track_ids.get(index)
         label = f"ID {track_id}" if track_id is not None else "Untracked"
         posture = postures.get(track_id, UNCLEAR)
+        unclear_people += posture == UNCLEAR
         label += f" - {posture}" if posture != UNCLEAR else " - posture unclear"
         color = colors(track_id, bgr=True) if track_id is not None else (0, 215, 255)
         annotator.box_label(box, label, color=color)
-    return view, len(poses), len(matches), len(people) - len(matches), postures
+    return view, len(poses), len(matches), unclear_people, postures
+
+
+def output_paths(source, output, pipeline):
+    suffix = "annotated" if pipeline else "comparison"
+    video = output / f"{source.stem}_{suffix}.mp4"
+    return video, video.with_suffix(".partial.mp4"), output / f"{source.stem}_scores.json"
+
+
+def check_output_paths(sources, output, pipeline):
+    # Resolve symlinks and check existing hard links before opening any output.
+    input_paths = {path.resolve() for path in sources}
+    existing_inputs = [path for path in input_paths if path.exists()]
+    for source in sources:
+        for path in output_paths(source, output, pipeline):
+            if path.resolve() in input_paths or (
+                path.exists() and any(path.samefile(input_path) for input_path in existing_inputs)
+            ):
+                raise ValueError(f"Output would overwrite an input: {path}")
 
 
 def compare(source, output, models, *, pipeline=False, preview=False, detector=POSE_GATE_MODEL):
     camera = isinstance(source, int)
+    video = temporary = report_path = None
+    if not preview:
+        check_output_paths([source], output, pipeline)
+        video, temporary, report_path = output_paths(source, output, pipeline)
     capture = cv2.VideoCapture(source if camera else str(source))
     window_open = False
     try:
@@ -133,11 +157,6 @@ def compare(source, output, models, *, pipeline=False, preview=False, detector=P
         height, width = frame.shape[:2]
         width, height = 640, max(2, 2 * round(height * 640 / width / 2))
         panel_height = height + 28
-        suffix = "annotated" if pipeline else "comparison"
-        video = None if preview else output / f"{source.stem}_{suffix}.mp4"
-        if video is not None and source.resolve() == video.resolve():
-            raise ValueError(f"Output would overwrite the source video: {source}")
-        temporary = video.with_suffix(".partial.mp4") if video is not None else None
         times = {name: [] for name, _, _ in models}
         person_frames = dict.fromkeys(times, 0)
         furniture = {name: set() for name in times if name != MODELS[-1]}
@@ -228,7 +247,8 @@ def compare(source, output, models, *, pipeline=False, preview=False, detector=P
                     else:
                         encoder.stdin.write((view if pipeline else panel).tobytes())
                     if frames % 100 == 0:
-                        print(f"{source.name}: processed {frames} frames", flush=True)
+                        source_name = f"camera {source}" if camera else source.name
+                        print(f"{source_name}: processed {frames} frames", flush=True)
                     ok, frame = capture.read()
                 if encoder is not None:
                     encoder.stdin.close()
@@ -270,7 +290,7 @@ def compare(source, output, models, *, pipeline=False, preview=False, detector=P
             name: median(values[1:] or values) for name, values in times.items()
         },
     }
-    (output / f"{source.stem}_scores.json").write_text(json.dumps(report, indent=2) + "\n")
+    report_path.write_text(json.dumps(report, indent=2) + "\n")
     print(json.dumps(report, indent=2), flush=True)
 
 
@@ -305,6 +325,10 @@ def main():
         output = ROOT / "t1" / ("pipeline_results" if pipeline else "video_posture")
         if args.detector != POSE_GATE_MODEL:
             output = output / args.detector
+        try:
+            check_output_paths(args.videos, output, pipeline)
+        except ValueError as error:
+            parser.error(str(error))
         output.mkdir(parents=True, exist_ok=True)
     models = load_models((args.detector, MODELS[-1]) if pipeline else MODELS)
     sources = [args.camera] if args.camera is not None else args.videos

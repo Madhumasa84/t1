@@ -11,17 +11,10 @@ import cv2
 import numpy as np
 from PIL.JpegImagePlugin import JpegImageFile
 
-from .compare_video import (
-    DETECTION_CONFIDENCE,
-    MODELS,
-    POSE_GATE_MODEL,
-    PostureHold,
-    gated_pose_view,
-    load_models,
-    new_tracker,
-    predict_frame,
-    track_people,
-)
+if __package__:
+    from . import compare_video as video
+else:
+    import compare_video as video
 
 
 MAX_BYTES = 512 * 1024
@@ -31,7 +24,7 @@ PAGE = Path(__file__).with_name("camera.html").read_bytes()
 
 class CameraPreview:
     def __init__(self, detector):
-        self.detection, self.pose = load_models((detector, MODELS[-1]))
+        self.detection, self.pose = video.load_models((detector, video.MODELS[-1]))
         self.session = None
         self.last_frame = 0
 
@@ -39,20 +32,20 @@ class CameraPreview:
         now = monotonic()
         if session != self.session or now - self.last_frame > 3:
             self.session = session
-            self.tracker = new_tracker()
-            self.posture = PostureHold(1)
+            self.tracker = video.new_tracker()
+            self.posture = video.PostureHold(1)
         self.last_frame = now
         _, detector, object_classes = self.detection
         _, pose, pose_classes = self.pose
-        detection = predict_frame(detector, frame, object_classes, self.tracker.args.track_low_thresh)
-        people, track_ids = track_people(frame, detection, self.tracker)
+        detection = video.predict_frame(detector, frame, object_classes, self.tracker.args.track_low_thresh)
+        people, track_ids = video.track_people(frame, detection, self.tracker)
         person_id = next(index for index, name in detection.names.items() if name == "person")
-        furniture = detection[(detection.boxes.cls != person_id) & (detection.boxes.conf >= DETECTION_CONFIDENCE)]
+        furniture = detection[(detection.boxes.cls != person_id) & (detection.boxes.conf >= video.DETECTION_CONFIDENCE)]
         if len(people) == 0:
             self.posture.update({}, now)
             return furniture.plot()
-        joints = predict_frame(pose, frame, pose_classes, DETECTION_CONFIDENCE)
-        annotated, *_ = gated_pose_view(furniture.plot(), people, joints, track_ids, self.posture, now)
+        joints = video.predict_frame(pose, frame, pose_classes, video.DETECTION_CONFIDENCE)
+        annotated, *_ = video.gated_pose_view(furniture.plot(), people, joints, track_ids, self.posture, now)
         return annotated
 
 
@@ -130,7 +123,7 @@ class CameraHandler(BaseHTTPRequestHandler):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--port", type=int, default=8765)
-    parser.add_argument("--detector", choices=MODELS[:2], default=POSE_GATE_MODEL)
+    parser.add_argument("--detector", choices=video.MODELS[:2], default=video.POSE_GATE_MODEL)
     args = parser.parse_args()
     if not 1024 <= args.port <= 65535:
         parser.error("--port must be between 1024 and 65535")
