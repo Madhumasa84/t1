@@ -34,7 +34,6 @@ class CameraPreview:
             self.session = session
             self.tracker = video.new_tracker()
             self.posture = video.PostureHold(1)
-        self.last_frame = now
         _, detector, object_classes = self.detection
         _, pose, pose_classes = self.pose
         detection = video.predict_frame(detector, frame, object_classes, self.tracker.args.track_low_thresh)
@@ -43,9 +42,11 @@ class CameraPreview:
         furniture = detection[(detection.boxes.cls != person_id) & (detection.boxes.conf >= video.DETECTION_CONFIDENCE)]
         if len(people) == 0:
             self.posture.update({}, now)
-            return furniture.plot()
-        joints = video.predict_frame(pose, frame, pose_classes, video.DETECTION_CONFIDENCE)
-        annotated, *_ = video.gated_pose_view(furniture.plot(), people, joints, track_ids, self.posture, now)
+            annotated = furniture.plot()
+        else:
+            joints = video.predict_frame(pose, frame, pose_classes, video.DETECTION_CONFIDENCE)
+            annotated, *_ = video.gated_pose_view(furniture.plot(), people, joints, track_ids, self.posture, now)
+        self.last_frame = monotonic()
         return annotated
 
 

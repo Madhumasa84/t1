@@ -27,6 +27,7 @@ def estimate_posture(joints, box):
         return "lying down"
 
     sitting = standing = False
+    shortened_thighs = 0
     for hx, hy, torso, vertical, knee, ankle in sides:
         if vertical < .7 or joints[knee][2] < JOINT_CONFIDENCE:
             continue
@@ -37,7 +38,13 @@ def estimate_posture(joints, box):
         sitting |= abs(ky - hy) <= .60 * thigh
         if joints[ankle][2] >= JOINT_CONFIDENCE:
             _, ay = joints[ankle][:2]
-            standing |= ky - hy >= .75 * thigh and ay - ky >= .25 * torso
+            if ky - hy >= .75 * thigh and ay - ky >= .25 * torso:
+                # Facing the camera, seated thighs project shorter than both torso and shins.
+                if ky - hy <= .70 * torso and ky - hy <= .85 * (ay - ky):
+                    shortened_thighs += 1
+                else:
+                    standing = True
+    sitting |= shortened_thighs == 2
     if sitting != standing:
         return "sitting" if sitting else "standing"
     return UNCLEAR

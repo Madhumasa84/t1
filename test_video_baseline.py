@@ -110,3 +110,32 @@ def test_camera_entry_points(module):
     run = subprocess.run([sys.executable, *command, "--help"], cwd=project.parent,
                          capture_output=True, text=True, check=True)
     assert "--detector" in run.stdout
+
+
+def test_front_facing_sitting_and_missing_leg():
+    joints = np.zeros((17, 3))
+    for idx, xy in {5: (405, 288), 6: (266, 280), 11: (381, 456), 12: (284, 454),
+                    13: (425, 563), 14: (273, 560), 15: (425, 706), 16: (243, 696)}.items():
+        joints[idx] = (*xy, .95)
+    assert video.estimate_posture(joints, [175, 147, 479, 717]) == "sitting"
+    joints[16, 2] = 0
+    assert video.estimate_posture(joints, [175, 147, 479, 717]) == "unclear"
+
+
+def test_track_survives_pose_change_confidence_dip_and_short_gap():
+    tracker = video.new_tracker()
+    frame = np.zeros((200, 200, 3), np.uint8)
+
+    def tracks(boxes):
+        return video.track_people(frame, result(frame, boxes), tracker)[1]
+
+    original = tracks([[20, 10, 80, 180, .95, 0]])
+    assert len(original) == 1
+    seated = [40, 60, 110, 175, .40, 0]
+    assert tracks([seated]) == original
+    assert tracks([]) == {}
+    assert tracks([seated]) == original
+    distant = [145, 20, 195, 180, .95, 0]
+    tracks([distant])
+    different = tracks([distant])
+    assert len(different) == 1 and different != original

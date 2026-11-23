@@ -52,6 +52,8 @@ def load_models(names):
 
 def new_tracker():
     config = YAML.load(ULTRALYTICS_ROOT / "cfg/trackers/bytetrack.yaml")
+    # Confidence already gates detections. Match their motion even when a pose change lowers the score.
+    config["fuse_score"] = False
     return BYTETracker(SimpleNamespace(**config))
 
 
@@ -105,7 +107,7 @@ def gated_pose_view(frame, people, pose, track_ids, posture_hold, frame_index):
     unclear_people = 0
     for index, box in enumerate(people.boxes.xyxy.int().tolist()):
         track_id = track_ids.get(index)
-        label = f"ID {track_id}" if track_id is not None else "Untracked"
+        label = f"Track {track_id}" if track_id is not None else "Untracked"
         posture = postures.get(track_id, UNCLEAR)
         unclear_people += posture == UNCLEAR
         label += f" - {posture}" if posture != UNCLEAR else " - posture unclear"
