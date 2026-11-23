@@ -12,8 +12,10 @@ import numpy as np
 from PIL.JpegImagePlugin import JpegImageFile
 
 if __package__:
+    from . import presence
     from . import compare_video as video
 else:
+    import presence
     import compare_video as video
 
 
@@ -23,18 +25,37 @@ PAGE = Path(__file__).with_name("camera.html").read_bytes()
 
 
 class CameraPreview:
-    def __init__(self, detector):
+    def __init__(self, detector, history, grace):
         self.detection, self.pose = video.load_models((detector, video.MODELS[-1]))
+        self.room = presence.RoomPresence(grace)
+        self.history = history
+        self.history.record(presence.UNAVAILABLE)
         self.session = None
         self.last_frame = 0
+        self.last_observation = 0
+
+    def disconnect(self):
+        if self.session is not None:
+            self.history.record(presence.UNAVAILABLE)
+            self.room.disconnect()
+            self.session = None
+
+    def check_connection(self):
+        if self.session is not None and monotonic() - self.last_frame > presence.LIVE_GAP_SECONDS:
+            self.disconnect()
 
     def annotate(self, session, frame):
         now = monotonic()
-        if session != self.session or now - self.last_frame > 3:
+        self.check_connection()
+        if session != self.session:
+            self.disconnect()
             self.session = session
             self.tracker = video.new_tracker()
             self.display_ids = {}
             self.posture = video.PostureHold(1)
+        elif now - self.last_observation > presence.LIVE_GAP_SECONDS:
+            self.history.record(presence.UNAVAILABLE)
+            self.room.disconnect()
         _, detector, object_classes = self.detection
         _, pose, pose_classes = self.pose
         detection = video.predict_frame(detector, frame, object_classes, self.tracker.args.track_low_thresh)
@@ -50,8 +71,18 @@ class CameraPreview:
             annotated, *_ = video.gated_pose_view(
                 annotated, people, joints, track_ids, self.posture, now, self.display_ids
             )
+        previous = self.room.state
+        state = self.room.observe(len(people), now)
+        if previous != state:
+            self.history.record(state)
+        self.last_observation = now
         self.last_frame = monotonic()
         return annotated
+
+
+class PreviewServer(HTTPServer):
+    def service_actions(self):
+        self.preview.check_connection()
 
 
 class CameraHandler(BaseHTTPRequestHandler):
@@ -63,8 +94,10 @@ class CameraHandler(BaseHTTPRequestHandler):
         port = self.server.server_port
         return self.headers.get("Host") in {f"localhost:{port}", f"127.0.0.1:{port}"}
 
-    def send_bytes(self, content, content_type):
+    def send_bytes(self, content, content_type, room_state=None):
         self.send_response(200)
+        if room_state is not None:
+            self.send_header("X-Room-Presence", room_state)
         self.send_header("Content-Type", content_type)
         self.send_header("Content-Length", str(len(content)))
         self.send_header("Cache-Control", "no-store")
@@ -118,7 +151,7 @@ class CameraHandler(BaseHTTPRequestHandler):
         if not ok:
             self.send_error(500, "Could not encode preview")
             return
-        self.send_bytes(jpeg.tobytes(), "image/jpeg")
+        self.send_bytes(jpeg.tobytes(), "image/jpeg", self.server.preview.room.state)
 
     def log_request(self, code="-", size="-"):
         if self.path != "/frame" or str(code) != "200":
@@ -129,16 +162,23 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--port", type=int, default=8765)
     parser.add_argument("--detector", choices=video.MODELS[:2], default=video.POSE_GATE_MODEL)
+    parser.add_argument("--vacancy-grace", type=presence.grace_seconds, default=presence.DEFAULT_GRACE,
+                        metavar="SECONDS")
+    parser.add_argument("--history", type=Path, default=Path(__file__).with_name("room-presence.sqlite3"))
     args = parser.parse_args()
     if not 1024 <= args.port <= 65535:
         parser.error("--port must be between 1024 and 65535")
-    with HTTPServer(("127.0.0.1", args.port), CameraHandler) as server:
-        server.preview = CameraPreview(args.detector)
+    with PreviewServer(("127.0.0.1", args.port), CameraHandler) as server:
+        history = presence.PresenceHistory(args.history)
+        server.preview = CameraPreview(args.detector, history, args.vacancy_grace)
         print(f"Home Tower is ready at http://localhost:{args.port}/ ({args.detector})", flush=True)
         try:
             server.serve_forever()
         except KeyboardInterrupt:
             pass
+        finally:
+            server.preview.disconnect()
+            history.db.close()
 
 
 if __name__ == "__main__":

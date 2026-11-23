@@ -37,11 +37,15 @@ done
 
 ## Stage 1 — Notice when the room is empty
 
-- [ ] `feature/room-presence`
+- [x] `feature/room-presence`
 
 Show whether someone is visible, no one is visible, or the camera is unavailable. Start with a five-second grace period after the last person disappears. Record one vacancy event when that period expires. A disconnected camera starts a coverage gap. The status applies only to the camera’s view.
 
 **Ready to merge when** a person entering clears the vacancy, one of two people leaving keeps the room occupied, and the last person leaving produces exactly one vacancy event within two seconds after the grace period. Require zero false vacancy notices on the reserved short-occlusion and disconnect clips. Include a pet alone in the room.
+
+**Development verification.** The live preview reports presence for the camera’s field of view. It holds the occupied status through brief occlusions and records one vacancy after five continuous seconds of empty observations. The server writes UTC state changes to local SQLite. Use `--history PATH` to select the file and `--vacancy-grace SECONDS` to change the delay. Saved-video reports include the transitions in `room_presence.events` using seconds from the recording.
+
+The real-model replay used a two-person image, a single-person video frame, and a pet-only image. With one-second samples, the last person left at second 5, the vacancy started at second 10, and the person returned at second 12. There were zero false or missed vacancies in this sequence. The camera backend agreed with the replay and reported a coverage gap on disconnect. All 24 automated tests passed. The household confirmed that room presence worked in the live laptop preview and accepted Stage 1.
 
 ## Stage 2 — Measure sitting time
 
