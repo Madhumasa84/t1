@@ -1,0 +1,32 @@
+{
+  "_note": "Hand labels written at 2026-11-25T19:06Z UTC from timestamped frame sheets (1 s, 0.2 s and single-frame steps), before any detector, pose or posture model ran on this clip. Seconds from clip start; the clip is one continuous shot with no cut (largest ffmpeg scdet score 0.93 percent, at the first frame). The estimator and interval rules are those of feature/sitting-time at 1e5e782.",
+  "clip": {
+    "path": "videos/stage2-two-person/pexels_4008311.mp4",
+    "title": "Two Women Busy With Their Cellphone In The Sofa With One Standing Up",
+    "page": "https://www.pexels.com/video/4008311/",
+    "source": "https://videos.pexels.com/video-files/4008311/4008311-uhd_4096_2160_25fps.mp4",
+    "license": "Pexels License",
+    "sha256": "6f01c09a09b9de264a5aec1bf4f6e809f5404ce86182bcf9634d9c06b2316596",
+    "frames": 621,
+    "fps": 25,
+    "seconds": 24.84
+  },
+  "people": {
+    "A": {
+      "who": "woman in a yellow T-shirt and white trousers, left half of the sofa, legs folded up with one knee raised, feet hidden",
+      "seated": [[0.0, 24.84]],
+      "standing": [],
+      "notes": "Seated for the whole clip. Between about 6.8 and 7.5 s the other woman passes between her and the camera, in front of her raised knee."
+    },
+    "B": {
+      "who": "woman in a white hoodie and black shorts, right half of the sofa while seated",
+      "seated": [[0.0, 6.7]],
+      "stand_up": 6.7,
+      "standing": [[6.7, 7.5], [9.8, 24.84]],
+      "out_of_view": [[7.5, 9.8]],
+      "notes": "Lower body hidden while seated. Leans forward from about 5.9 s; torso rises at 6.64-6.72 s (head leaves the top of the frame at 6.72 s); upright with legs visible by 7.04 s. Walks past the camera close to the lens and leaves the right edge at 7.5 s. Re-enters at the right edge at 9.8 s and stands or walks in the kitchen at the back until the end."
+    }
+  },
+  "identity_rule": "Decided before the run. A pipeline box belongs to A when its centre is left of 45 percent of the frame width and to B otherwise. A box whose left edge is left of 27 percent and right edge right of 72 percent of the width (both seated positions) counts as merged and belongs to neither.",
+  "pass": "B's last sitting interval ends within 1 s of 6.7 s (5.7-7.7 s), and A's sitting continues through 5.7-7.7 s without being ended by the transition. Time a track spends labeled sitting while it belongs to the other person, or to a merged box, is reported as misassigned."
+}

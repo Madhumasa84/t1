@@ -1,0 +1,105 @@
+{
+  "interval_recording_matches_frame_labels": true,
+  "people": {
+    "A": {
+      "who": "woman in a yellow T-shirt and white trousers, left half of the sofa, legs folded up with one knee raised, feet hidden",
+      "track_ids": [
+        "1"
+      ],
+      "expected_sitting_seconds": 24.84,
+      "sitting_seconds_counted_on_this_person": 0.0,
+      "sitting_seconds_on_own_tracks": 0,
+      "missed_seconds_by_first_failing_step": {
+        "posture: estimator said unclear": 24.8,
+        "posture: no pose matched to the box": 0.04
+      },
+      "sitting_seconds_while_not_seated": 0,
+      "while_seated": {
+        "frames_with_a_box": 621,
+        "boxes_reaching_the_bottom_edge": 621,
+        "frames_with_a_pose": 620,
+        "frames_with_a_hip_at_or_above_cutoff": 97,
+        "frames_with_a_knee_at_or_above_cutoff": 0,
+        "median_best_hip_confidence": 0.16,
+        "median_best_knee_confidence": 0.03
+      }
+    },
+    "B": {
+      "who": "woman in a white hoodie and black shorts, right half of the sofa while seated",
+      "track_ids": [
+        "2",
+        "5"
+      ],
+      "expected_sitting_seconds": 6.7,
+      "sitting_seconds_counted_on_this_person": 0.0,
+      "sitting_seconds_on_own_tracks": 0,
+      "missed_seconds_by_first_failing_step": {
+        "posture: estimator said unclear": 6.72
+      },
+      "sitting_seconds_while_not_seated": 0,
+      "while_seated": {
+        "frames_with_a_box": 168,
+        "boxes_reaching_the_bottom_edge": 168,
+        "frames_with_a_pose": 168,
+        "frames_with_a_hip_at_or_above_cutoff": 5,
+        "frames_with_a_knee_at_or_above_cutoff": 0,
+        "median_best_hip_confidence": 0.165,
+        "median_best_knee_confidence": 0.02
+      }
+    }
+  },
+  "tracks": {
+    "1": {
+      "frames_by_person": {
+        "A": 621
+      },
+      "sitting_seconds_by_person": {},
+      "person": "A",
+      "sitting_seconds_on_another_person": 0,
+      "sitting_seconds": 0,
+      "unclear_seconds": 24.84,
+      "sitting_intervals": []
+    },
+    "2": {
+      "frames_by_person": {
+        "B": 189
+      },
+      "sitting_seconds_by_person": {},
+      "person": "B",
+      "sitting_seconds_on_another_person": 0,
+      "sitting_seconds": 0,
+      "unclear_seconds": 7.56,
+      "sitting_intervals": []
+    },
+    "5": {
+      "frames_by_person": {
+        "B": 375
+      },
+      "sitting_seconds_by_person": {},
+      "person": "B",
+      "sitting_seconds_on_another_person": 0,
+      "sitting_seconds": 0,
+      "unclear_seconds": 2.88,
+      "sitting_intervals": []
+    }
+  },
+  "sitting_seconds_on_merged_boxes": 0.0,
+  "sitting_seconds_on_a_track_of_another_person": 0,
+  "standing_timer": {
+    "person": "B",
+    "labeled_stand_up": 6.7,
+    "last_sitting_interval_ends": null,
+    "error_seconds": null,
+    "within_tolerance": false,
+    "sitting_after_window": []
+  },
+  "seated_timer": {
+    "person": "A",
+    "window": [
+      5.7,
+      7.7
+    ],
+    "sitting_intervals_overlapping_window": [],
+    "kept_counting": false
+  }
+}

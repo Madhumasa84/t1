@@ -115,6 +115,19 @@ In `v6.mp4` the first sitting label falls inside the one-second tolerance of the
 
 Live check. `v6.mp4` was sent to the real preview server as JPEG frames at the video's own pace, as a browser camera would send them. The server processed 100 of 525 frames (4.7 per second) and recorded 11.72 seconds of sitting in three intervals and 3.94 seconds unclear, against 12.04 and 4.52 seconds in the replay. When the frames stopped, the server's idle check closed the intervals at the last processed frame and saved them to SQLite, where the totals matched. The presence history also logged a coverage gap after the first frame. This is existing behavior: the first inference most likely took more than 3 seconds to warm up. No physical webcam or browser was available for this check. The independent final-check clip with a visible stand-up and two people in different postures is still needed.
 
+**Two-person check (26 November 2026).** No local clip had two seated people with one standing up: `v9.mp4` has three people seated throughout, and the rest show one person or two people lying down. The test used Pexels video 4008311, a continuous 24.84-second shot. Woman A, in a yellow T-shirt on the left, stays seated throughout. Woman B, in a white hoodie on the right, leaves the seat at 6.7 seconds, walks past the camera, is out of view from 7.5 to 9.8 seconds, and then stands in the kitchen. The labels and the rule assigning boxes to people were written before any model ran. The files are in `stage2_checks/two_person*`, and `python stage2_checks/two_person.py --check` reproduces the result.
+
+The check fails at posture labeling, so it does not yet test the timers.
+
+| Person | Track IDs | Seated (labeled) | Counted as sitting | Where the seated time went |
+|---|---|---|---|---|
+| A | 1, all 621 frames | 0–24.84 s | 0 s | Unclear 24.80 s, no matched pose 0.04 s |
+| B | 2 until 7.52 s, then 5 from 9.84 s | 0–6.70 s | 0 s | Unclear 6.72 s; the frame at 6.68 s lasts until 6.72 s |
+
+Detection and tracking held. Neither track ever moved to the other person, a box covering both women at 7.44 seconds stayed untracked for that one frame, and no sitting time went to the wrong person or to a merged box. B was absent from 7.60 to 9.76 seconds, matching her labeled time out of view, and track 5 labeled her standing on 303 of its 375 frames. The recorded intervals match the per-frame labels exactly. B's timer never started, so its stop against the ±1-second tolerance could not be measured. A's timer did not keep counting through the stand-up because it never ran.
+
+The cause is camera framing. The bottom of the frame cuts through both women's laps, and every seated box reaches it. No seated frame has a knee at the 0.30 joint cutoff: the median best knee confidence is 0.03 for A and 0.02 for B, and the median best hip is 0.16 for both. Both sitting rules need a knee, so the estimator returns unclear by design. This is the same pattern as Mixkit 250, where the lap and legs are out of frame. The two-person timer question still needs a clip that shows both people's knees, framed like the proposed wider camera placement.
+
 ## Stage 3 — Assign activity to household members
 
 - [ ] `feature/household-profiles`
