@@ -1,11 +1,12 @@
 """Serve a local browser webcam preview using the Home Tower pipeline."""
 
 import argparse
+from datetime import datetime, timezone
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from io import BytesIO
 from pathlib import Path
-from time import monotonic
-from uuid import UUID
+from time import monotonic, time
+from uuid import UUID, uuid4
 
 import cv2
 import numpy as np
@@ -33,11 +34,39 @@ class CameraPreview:
         self.session = None
         self.last_frame = 0
         self.last_observation = 0
+        self.start_tracking(monotonic())
+
+    def start_tracking(self, now):
+        """A new tracker restarts track IDs, so its intervals get a new run ID."""
+        self.tracker = video.new_tracker()
+        self.display_ids = {}
+        self.posture = video.PostureHold(1)
+        self.intervals = video.PostureIntervals()
+        self.tracker_run = uuid4().hex
+        self.saved_intervals = 0
+        self.utc_offset = time() - now
+
+    def utc(self, seconds):
+        stamp = datetime.fromtimestamp(self.utc_offset + seconds, timezone.utc)
+        return stamp.isoformat(timespec="milliseconds").replace("+00:00", "Z")
+
+    def save_intervals(self):
+        ended = self.intervals.intervals[self.saved_intervals:]
+        if not ended:
+            return
+        self.history.record_intervals(self.tracker_run, [
+            (track, posture, self.utc(start), self.utc(end), end - start) for track, posture, start, end in ended])
+        self.saved_intervals += len(ended)
+
+    def end_coverage(self):
+        self.intervals.close()
+        self.save_intervals()
+        self.history.record(presence.UNAVAILABLE)
+        self.room.disconnect()
 
     def disconnect(self):
         if self.session is not None:
-            self.history.record(presence.UNAVAILABLE)
-            self.room.disconnect()
+            self.end_coverage()
             self.session = None
 
     def check_connection(self):
@@ -50,12 +79,9 @@ class CameraPreview:
         if session != self.session:
             self.disconnect()
             self.session = session
-            self.tracker = video.new_tracker()
-            self.display_ids = {}
-            self.posture = video.PostureHold(1)
+            self.start_tracking(now)
         elif now - self.last_observation > presence.LIVE_GAP_SECONDS:
-            self.history.record(presence.UNAVAILABLE)
-            self.room.disconnect()
+            self.end_coverage()
         _, detector, object_classes = self.detection
         _, pose, pose_classes = self.pose
         detection = video.predict_frame(detector, frame, object_classes, self.tracker.args.track_low_thresh)
@@ -66,11 +92,13 @@ class CameraPreview:
         annotated = video.plot_detections(furniture)
         if len(people) == 0:
             self.posture.update({}, now)
+            self.intervals.observe({}, now)
         else:
             joints = video.predict_frame(pose, frame, pose_classes, video.DETECTION_CONFIDENCE)
             annotated, *_ = video.gated_pose_view(
-                annotated, people, joints, track_ids, self.posture, now, self.display_ids
+                annotated, people, joints, track_ids, self.posture, now, self.display_ids, self.intervals, now
             )
+        self.save_intervals()
         previous = self.room.state
         state = self.room.observe(len(people), now)
         if previous != state:

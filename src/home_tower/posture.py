@@ -1,9 +1,12 @@
 """Conservative posture estimates from COCO pose joints in a fixed camera view."""
 
+from collections import Counter
 from math import hypot
 
 
 UNCLEAR = "unclear"
+SITTING = "sitting"
+RECORDED_POSTURES = (SITTING, UNCLEAR)
 JOINT_CONFIDENCE = .30
 HOLD_SECONDS = .30
 
@@ -68,3 +71,59 @@ class PostureHold:
             labels[track_id] = posture if frame - started >= HOLD_SECONDS * self.fps else UNCLEAR
         self.pending = active
         return labels
+
+
+class PostureIntervals:
+    """Turn each track's final posture labels into sitting and unclear intervals.
+
+    Times are seconds on one clock: video timestamps for recordings, elapsed time for live input. An
+    observation lasts until the next one, so a track whose label changes, or that is missing from an
+    observation, ends its interval at that observation's time. close() ends coverage for every track:
+    a camera gap or disconnect closes at the last observation, the end of a video at the end of its
+    last frame. Track IDs must be unique for the life of the recorder; use a new recorder per tracker.
+    """
+
+    def __init__(self):
+        self.intervals = []  # (track, posture, start, end), in the order they ended
+        self.open = {}
+        self.totals = Counter()
+        self.last = None
+
+    def observe(self, postures, now):
+        """Record the final label of every visible track at time now."""
+        for track, (posture, _) in list(self.open.items()):
+            if postures.get(track) != posture:
+                self._end(track, now)
+        for track, posture in postures.items():
+            if posture in RECORDED_POSTURES:
+                self.open.setdefault(track, (posture, now))
+        self.last = now
+
+    def close(self, end=None):
+        """End coverage. Nothing after the last observation counts unless end is given."""
+        for track in list(self.open):
+            self._end(track, self.last if end is None else end)
+
+    def _end(self, track, end):
+        posture, start = self.open.pop(track)
+        if end > start:
+            self.intervals.append((track, posture, start, end))
+            self.totals[track, posture] += end - start
+
+    def seconds(self, track, posture, now):
+        """Total time so far, including an interval still open at time now."""
+        open_posture, start = self.open.get(track, (None, now))
+        return self.totals[track, posture] + (now - start if open_posture == posture else 0)
+
+    def report(self):
+        """Closed intervals by track, rounded to milliseconds. Each total is the sum of its intervals."""
+        intervals = {}
+        for track, posture, start, end in sorted(self.intervals, key=lambda interval: interval[::2]):
+            intervals.setdefault(track, []).append((posture, round(start, 3), round(end, 3)))
+        report = {}
+        for track, rows in intervals.items():
+            report[track] = {f"{name}_seconds": round(sum(end - start for posture, start, end in rows if posture == name), 3)
+                             for name in RECORDED_POSTURES}
+            report[track]["intervals"] = [{"posture": posture, "start_seconds": start, "end_seconds": end}
+                                          for posture, start, end in rows]
+        return report

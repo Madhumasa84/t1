@@ -50,6 +50,18 @@ class PresenceHistory:
         self.db.execute("""CREATE TABLE IF NOT EXISTS presence_events (
             id INTEGER PRIMARY KEY, observed_at_utc TEXT NOT NULL, state TEXT NOT NULL
         )""")
+        # Closed sitting and unclear intervals. Track IDs are unique only within one tracker run.
+        self.db.execute("""CREATE TABLE IF NOT EXISTS posture_intervals (
+            id INTEGER PRIMARY KEY, tracker_run TEXT NOT NULL, track_id INTEGER NOT NULL, posture TEXT NOT NULL,
+            started_at_utc TEXT NOT NULL, ended_at_utc TEXT NOT NULL, seconds REAL NOT NULL
+        )""")
+
+    def record_intervals(self, tracker_run, rows):
+        """Save (track_id, posture, started_at_utc, ended_at_utc, seconds) rows."""
+        with self.db:
+            self.db.executemany("""INSERT INTO posture_intervals
+                (tracker_run, track_id, posture, started_at_utc, ended_at_utc, seconds) VALUES (?, ?, ?, ?, ?, ?)""",
+                                [(tracker_run, *row) for row in rows])
 
     def record(self, state):
         with self.db:

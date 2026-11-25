@@ -25,10 +25,12 @@ from ultralytics.utils.plotting import Annotator, colors
 
 if __package__:
     from .presence import DEFAULT_GRACE, LIVE_GAP_SECONDS, UNAVAILABLE, RoomPresence, grace_seconds
-    from .posture import HOLD_SECONDS, JOINT_CONFIDENCE, UNCLEAR, PostureHold, estimate_posture
+    from .posture import (HOLD_SECONDS, JOINT_CONFIDENCE, SITTING, UNCLEAR, PostureHold, PostureIntervals,
+                           estimate_posture)
 else:
     from presence import DEFAULT_GRACE, LIVE_GAP_SECONDS, UNAVAILABLE, RoomPresence, grace_seconds
-    from posture import HOLD_SECONDS, JOINT_CONFIDENCE, UNCLEAR, PostureHold, estimate_posture
+    from posture import (HOLD_SECONDS, JOINT_CONFIDENCE, SITTING, UNCLEAR, PostureHold, PostureIntervals,
+                         estimate_posture)
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 MODELS = ("yolo26n", "yolo26s", "yolo11n-pose")
@@ -96,8 +98,18 @@ def preview_ids(track_ids, previous):
     return current
 
 
-def gated_pose_view(frame, people, pose, track_ids, posture_hold, frame_index, display_ids=None):
-    """Match each usable pose to a distinct detector person box."""
+def clock(seconds):
+    minutes, seconds = divmod(int(seconds), 60)
+    hours, minutes = divmod(minutes, 60)
+    return f"{hours}:{minutes:02}:{seconds:02}" if hours else f"{minutes}:{seconds:02}"
+
+
+def gated_pose_view(frame, people, pose, track_ids, posture_hold, frame_index, display_ids=None,
+                    intervals=None, timestamp=None):
+    """Match each usable pose to a distinct detector person box.
+
+    With an interval recorder, record the final labels at timestamp and show each track's sitting total.
+    """
     confidence = pose.keypoints.conf
     usable = (confidence >= JOINT_CONFIDENCE).sum(dim=1) >= MIN_JOINTS
     poses = pose[usable]
@@ -125,6 +137,8 @@ def gated_pose_view(frame, people, pose, track_ids, posture_hold, frame_index, d
                 poses.keypoints.data[joint_pose].tolist(), poses.boxes.xyxy[joint_pose].tolist()
             )
     postures = posture_hold.update(raw_postures, frame_index)
+    if intervals is not None:
+        intervals.observe(postures, timestamp)
     annotator = Annotator(view, line_width=2)
     unclear_people = 0
     for index, box in enumerate(people.boxes.xyxy.int().tolist()):
@@ -140,6 +154,8 @@ def gated_pose_view(frame, people, pose, track_ids, posture_hold, frame_index, d
         posture = postures.get(track_id, UNCLEAR)
         unclear_people += posture == UNCLEAR
         label += f" - {posture}" if posture != UNCLEAR else " - posture unclear"
+        if intervals is not None and track_id is not None:
+            label += f" | sat {clock(intervals.seconds(track_id, SITTING, timestamp))}"
         color = colors(number, bgr=True) if number is not None else (0, 215, 255)
         annotator.box_label(box, label, color=color)
     return view, len(poses), len(matches), unclear_people, postures
@@ -203,6 +219,7 @@ def compare(source, output, models, *, pipeline=False, preview=False, detector=P
         display_ids = {} if preview else None
         # The live preview uses elapsed seconds because processing can run below camera FPS.
         posture_hold = PostureHold(1 if preview else fps)
+        intervals = PostureIntervals()
         started = monotonic()
         posture_counts = {}
         track_segments = {}
@@ -230,6 +247,7 @@ def compare(source, output, models, *, pipeline=False, preview=False, detector=P
                     gap_limit = LIVE_GAP_SECONDS if camera else max(LIVE_GAP_SECONDS, 2 / fps)
                     if frames and timestamp - last_timestamp > gap_limit:
                         presence.disconnect()
+                        intervals.close()
                         if not preview:
                             presence_events.append({"seconds": last_timestamp + gap_limit, "state": UNAVAILABLE})
                     last_timestamp = timestamp
@@ -266,7 +284,7 @@ def compare(source, output, models, *, pipeline=False, preview=False, detector=P
                         if name == MODELS[-1]:
                             view, usable, shown, unclear, postures = gated_pose_view(
                                 background if pipeline else frame, gate_people, result, track_ids, posture_hold,
-                                observed_at if preview else frames, display_ids,
+                                observed_at if preview else frames, display_ids, intervals, timestamp,
                             )
                             for track_id, posture in postures.items():
                                 posture_counts.setdefault(track_id, Counter())[posture] += 1
@@ -311,6 +329,8 @@ def compare(source, output, models, *, pipeline=False, preview=False, detector=P
                     if camera and not ok:
                         presence.disconnect()
                         print(presence.state, flush=True)
+                # A recording's last frame lasts one frame period. Live coverage ends at the last observation.
+                intervals.close(None if camera else last_timestamp + 1 / fps)
                 if encoder is not None:
                     encoder.stdin.close()
                     if encoder.wait():
@@ -342,6 +362,7 @@ def compare(source, output, models, *, pipeline=False, preview=False, detector=P
             "person_detection_frames_without_any_active_id": detected_without_track,
         },
         "posture": {"hold_seconds": HOLD_SECONDS, "frame_counts_by_track_id": posture_counts},
+        "sitting_time_by_track_id": intervals.report(),
         "pose_gate": {
             "detector": detector, "minimum_box_iou": POSE_MATCH_IOU,
             "minimum_joint_confidence": JOINT_CONFIDENCE, "minimum_joints": MIN_JOINTS,

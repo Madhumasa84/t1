@@ -101,6 +101,20 @@ Scored afterwards on the same recordings, and not part of the comparison planned
 
 To reproduce the tables, run `python stage2_checks/score.py --check`. The folder holds the hand labels, the per-frame labels from both versions, the clip checksums and a script that reruns both versions. The Mixkit clips are in `videos/stage2-unseen/` and download from `https://assets.mixkit.co/videos/ID/ID-720.mp4`. Videos stay on this machine and out of the repository. Stage 2 stays open: the false sitting under covers, the missed sitting behind tables and in frontal views, and the two-person check remain unresolved.
 
+**Per-track interval recording (25 November 2026).** Saved-video processing and the browser preview now share one recorder, `PostureIntervals` in `posture.py`. It turns each track's final posture labels into sitting and unclear intervals, using the recording's timestamps for videos and elapsed time for live input. The README explains the counting rules, the `sitting_time_by_track_id` report section and the `posture_intervals` history table. The posture labels themselves are unchanged: `run_versions.py --check upfall_cam1` reproduced the saved labels exactly. Timestamped tests with hand-worked totals cover two simultaneous tracks in different postures, sitting → unclear → sitting, irregular frame spacing, a disappearance, a disconnect, a new session, a reused display ID and the end of a video. The same observations fed through the saved-video pipeline and the preview server produce identical intervals.
+
+Real-model replays at full frame rate. Each total equals the sum of its intervals.
+
+| Clip | Hand label | Sitting intervals (s) | Sitting | Unclear |
+|---|---|---|---|---|
+| `v6.mp4`, 21.00 s, one track | Lowers onto the sofa 7.5–8.0 s, seated to the end | 7.68–8.24, 9.08–10.08, 10.52–21.00 | 12.04 s | 4.52 s: 4.44–7.68, 8.24–9.08, 10.08–10.52 |
+| `v4.mp4`, 7.64 s, one track | Seated throughout | 0.30–0.83, 1.17–1.50, 1.83–1.90, 4.40–6.11, 6.44–6.57 | 2.77 s | 4.87 s, longest 1.90–4.40 |
+| `v10.mp4`, 20.56 s, five tracks | Two people lying under a duvet throughout | Track 1: 1.36–1.84, 3.84–4.28, 5.04–5.16, 5.80–6.00, 6.36–8.52, 10.36–11.44, 13.20–13.72, 15.32–16.68. Track 8: 20.44–20.56 | 6.48 s, all false | 17.12 s |
+
+In `v6.mp4` the first sitting label falls inside the one-second tolerance of the sit-down. Of the 13.0 seconds seated after 8.0 seconds, 11.72 count as sitting. The two unclear spans while seated (1.28 seconds) split one hand-labeled interval into three, which counts as two extra intervals under the proposed scoring. `v4.mp4` keeps 2.77 of 7.64 seated seconds in five pieces. In `v10.mp4` the known false labels become 6.48 seconds of sitting in nine intervals: 6.36 seconds on track 1, which holds both people for most of the clip, and 0.12 seconds on track 8 in the last frames. The longest false interval is 2.16 seconds. Six of the nine are shorter than 0.6 seconds, but `v4.mp4` also has a genuine 0.07-second interval, so a minimum duration would discard real sitting as well.
+
+Live check. `v6.mp4` was sent to the real preview server as JPEG frames at the video's own pace, as a browser camera would send them. The server processed 100 of 525 frames (4.7 per second) and recorded 11.72 seconds of sitting in three intervals and 3.94 seconds unclear, against 12.04 and 4.52 seconds in the replay. When the frames stopped, the server's idle check closed the intervals at the last processed frame and saved them to SQLite, where the totals matched. The presence history also logged a coverage gap after the first frame. This is existing behavior: the first inference most likely took more than 3 seconds to warm up. No physical webcam or browser was available for this check. The independent final-check clip with a visible stand-up and two people in different postures is still needed.
+
 ## Stage 3 — Assign activity to household members
 
 - [ ] `feature/household-profiles`
