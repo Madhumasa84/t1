@@ -1,0 +1,21 @@
+{
+  "_note": "Hand labels written from timestamped frame sheets before any detector, pose or posture run on these clips. Seconds from clip start. Rule under test is fixed: a flat thigh counts as sitting only when the matched pose box confidence is >= 0.70.",
+  "mixkit_3207":  {"group": "lying", "what": "couple asleep under covers, bright, close overhead view", "lying": [[0.0, 10.83]]},
+  "mixkit_42981": {"group": "lying", "what": "couple asleep under covers at night, dark, overhead", "lying": [[0.0, 9.59]]},
+  "mixkit_42972": {"group": "lying", "what": "couple asleep on their sides under covers at night, overhead", "lying": [[0.0, 7.55]]},
+  "mixkit_31414": {"group": "lying", "what": "man under covers, low side view, tosses the duvet at 5-8 s", "lying": [[0.0, 13.18]]},
+  "mixkit_50754": {"group": "lying", "what": "man under covers, then sits up in bed from 7.4 s (upright part not scored)", "lying": [[0.0, 7.2]]},
+  "mixkit_31399": {"group": "lying", "what": "woman under a duvet, stretches, sits up in bed from 8.3 s (upright part not scored)", "lying": [[0.0, 8.3]]},
+  "mixkit_48733": {"group": "lying", "what": "man on his back under covers at night, reaches for an alarm clock", "lying": [[0.0, 36.6]]},
+  "upfall_cam1":  {"group": "seated", "what": "UP-Fall S1 A8 T1 first 5 s, frontal, full body on a chair", "seated": [[0.0, 5.0]]},
+  "upfall_cam2":  {"group": "seated", "what": "UP-Fall S1 A8 T1 first 5 s, side view, a second seated person behind", "seated": [[0.0, 5.0]]},
+  "mixkit_15774": {"group": "seated", "what": "man writing in an armchair, legs crossed, three-quarter view", "seated": [[0.0, 7.57]]},
+  "mixkit_12837": {"group": "seated", "what": "man on a park bench, frontal, knees and shins in view", "seated": [[0.0, 10.6]]},
+  "mixkit_250":   {"group": "seated", "what": "woman on a couch with a mug, lap and legs out of frame", "seated": [[0.0, 14.18]]},
+  "mixkit_48751": {"group": "seated", "what": "elderly woman in an armchair with a blanket; camera pushes in, hips leave the frame at about 9.6 s", "seated": [[0.0, 23.0]], "body_in_frame_until": 9.6},
+  "mixkit_12866": {"group": "sit-down", "what": "elderly man rises from an armchair and sits back down, side-on, full body", "seated": [[0.0, 1.1], [6.4, 8.76]], "standing": [[2.2, 5.5]], "stand_up": 1.1, "sit_down": 6.4},
+  "mixkit_50764": {"group": "sit-down", "what": "man steps over and sits on a sofa with legs stretched out; only legs in frame before 1.9 s", "seated": [[2.2, 9.34]], "sit_down": 2.2},
+  "mixkit_26083": {"group": "sit-down", "what": "woman walks from the counter and sits at a table; legs hidden by the table once seated", "seated": [[7.0, 11.18]], "standing": [[0.0, 6.5]], "sit_down": 7.0},
+  "mixkit_29328": {"group": "sit-down", "what": "man sits on a sofa behind a pizza box; head out of frame; no person visible before 4.2 s", "seated": [[5.4, 13.85]], "sit_down": 5.4},
+  "mixkit_16156": {"group": "sit-down", "what": "man walks to a riverbank and sits on the ground, seen from behind at a distance", "seated": [[11.1, 28.04]], "standing": [[0.5, 9.0]], "sit_down": 11.1}
+}

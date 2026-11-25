@@ -1,0 +1,890 @@
+{
+ "clips": {
+  "mixkit_3207": {
+   "group": "lying",
+   "frames": 260,
+   "video_s": 10.83,
+   "lying_labelled_s": 10.83,
+   "lying_covered_s": 10.83,
+   "lying_frames": 260,
+   "current": {
+    "sitting_frames": 0,
+    "false_sitting_s": 0,
+    "false_sitting_frames": 0,
+    "per_track": {
+     "1": {
+      "frames": 260,
+      "sitting_frames": 0,
+      "mean_box_centre_x": 421
+     },
+     "2": {
+      "frames": 138,
+      "sitting_frames": 0,
+      "mean_box_centre_x": 285
+     },
+     "4": {
+      "frames": 130,
+      "sitting_frames": 0,
+      "mean_box_centre_x": 311
+     }
+    }
+   },
+   "rule_0.70": {
+    "sitting_frames": 0,
+    "false_sitting_s": 0,
+    "false_sitting_frames": 0,
+    "per_track": {
+     "1": {
+      "frames": 260,
+      "sitting_frames": 0,
+      "mean_box_centre_x": 421
+     },
+     "2": {
+      "frames": 138,
+      "sitting_frames": 0,
+      "mean_box_centre_x": 285
+     },
+     "4": {
+      "frames": 130,
+      "sitting_frames": 0,
+      "mean_box_centre_x": 311
+     }
+    }
+   }
+  },
+  "mixkit_42981": {
+   "group": "lying",
+   "frames": 230,
+   "video_s": 9.59,
+   "lying_labelled_s": 9.59,
+   "lying_covered_s": 9.59,
+   "lying_frames": 230,
+   "current": {
+    "sitting_frames": 37,
+    "false_sitting_s": 1.54,
+    "false_sitting_frames": 37,
+    "per_track": {
+     "1": {
+      "frames": 230,
+      "sitting_frames": 37,
+      "mean_box_centre_x": 162
+     },
+     "2": {
+      "frames": 230,
+      "sitting_frames": 0,
+      "mean_box_centre_x": 367
+     }
+    }
+   },
+   "rule_0.70": {
+    "sitting_frames": 37,
+    "false_sitting_s": 1.54,
+    "false_sitting_frames": 37,
+    "per_track": {
+     "1": {
+      "frames": 230,
+      "sitting_frames": 37,
+      "mean_box_centre_x": 162
+     },
+     "2": {
+      "frames": 230,
+      "sitting_frames": 0,
+      "mean_box_centre_x": 367
+     }
+    }
+   }
+  },
+  "mixkit_42972": {
+   "group": "lying",
+   "frames": 181,
+   "video_s": 7.55,
+   "lying_labelled_s": 7.55,
+   "lying_covered_s": 7.55,
+   "lying_frames": 181,
+   "current": {
+    "sitting_frames": 46,
+    "false_sitting_s": 1.92,
+    "false_sitting_frames": 46,
+    "per_track": {
+     "1": {
+      "frames": 181,
+      "sitting_frames": 46,
+      "mean_box_centre_x": 184
+     },
+     "2": {
+      "frames": 181,
+      "sitting_frames": 0,
+      "mean_box_centre_x": 448
+     }
+    }
+   },
+   "rule_0.70": {
+    "sitting_frames": 46,
+    "false_sitting_s": 1.92,
+    "false_sitting_frames": 46,
+    "per_track": {
+     "1": {
+      "frames": 181,
+      "sitting_frames": 46,
+      "mean_box_centre_x": 184
+     },
+     "2": {
+      "frames": 181,
+      "sitting_frames": 0,
+      "mean_box_centre_x": 448
+     }
+    }
+   }
+  },
+  "mixkit_31414": {
+   "group": "lying",
+   "frames": 316,
+   "video_s": 13.18,
+   "lying_labelled_s": 13.18,
+   "lying_covered_s": 13.18,
+   "lying_frames": 316,
+   "current": {
+    "sitting_frames": 0,
+    "false_sitting_s": 0,
+    "false_sitting_frames": 0,
+    "per_track": {
+     "1": {
+      "frames": 187,
+      "sitting_frames": 0,
+      "mean_box_centre_x": 326
+     },
+     "2": {
+      "frames": 33,
+      "sitting_frames": 0,
+      "mean_box_centre_x": 410
+     },
+     "11": {
+      "frames": 7,
+      "sitting_frames": 0,
+      "mean_box_centre_x": 236
+     }
+    }
+   },
+   "rule_0.70": {
+    "sitting_frames": 0,
+    "false_sitting_s": 0,
+    "false_sitting_frames": 0,
+    "per_track": {
+     "1": {
+      "frames": 187,
+      "sitting_frames": 0,
+      "mean_box_centre_x": 326
+     },
+     "2": {
+      "frames": 33,
+      "sitting_frames": 0,
+      "mean_box_centre_x": 410
+     },
+     "11": {
+      "frames": 7,
+      "sitting_frames": 0,
+      "mean_box_centre_x": 236
+     }
+    }
+   }
+  },
+  "mixkit_50754": {
+   "group": "lying",
+   "frames": 306,
+   "video_s": 12.76,
+   "lying_labelled_s": 7.2,
+   "lying_covered_s": 7.2,
+   "lying_frames": 173,
+   "current": {
+    "sitting_frames": 0,
+    "false_sitting_s": 0,
+    "false_sitting_frames": 0,
+    "per_track": {
+     "1": {
+      "frames": 305,
+      "sitting_frames": 0,
+      "mean_box_centre_x": 281
+     },
+     "3": {
+      "frames": 32,
+      "sitting_frames": 0,
+      "mean_box_centre_x": 451
+     },
+     "5": {
+      "frames": 16,
+      "sitting_frames": 0,
+      "mean_box_centre_x": 393
+     },
+     "7": {
+      "frames": 19,
+      "sitting_frames": 0,
+      "mean_box_centre_x": 455
+     }
+    }
+   },
+   "rule_0.70": {
+    "sitting_frames": 0,
+    "false_sitting_s": 0,
+    "false_sitting_frames": 0,
+    "per_track": {
+     "1": {
+      "frames": 305,
+      "sitting_frames": 0,
+      "mean_box_centre_x": 281
+     },
+     "3": {
+      "frames": 32,
+      "sitting_frames": 0,
+      "mean_box_centre_x": 451
+     },
+     "5": {
+      "frames": 16,
+      "sitting_frames": 0,
+      "mean_box_centre_x": 393
+     },
+     "7": {
+      "frames": 19,
+      "sitting_frames": 0,
+      "mean_box_centre_x": 455
+     }
+    }
+   }
+  },
+  "mixkit_31399": {
+   "group": "lying",
+   "frames": 242,
+   "video_s": 10.09,
+   "lying_labelled_s": 8.3,
+   "lying_covered_s": 8.3,
+   "lying_frames": 199,
+   "current": {
+    "sitting_frames": 31,
+    "false_sitting_s": 1.29,
+    "false_sitting_frames": 31,
+    "per_track": {
+     "1": {
+      "frames": 231,
+      "sitting_frames": 31,
+      "mean_box_centre_x": 289
+     },
+     "4": {
+      "frames": 3,
+      "sitting_frames": 0,
+      "mean_box_centre_x": 315
+     },
+     "3": {
+      "frames": 70,
+      "sitting_frames": 0,
+      "mean_box_centre_x": 158
+     },
+     "5": {
+      "frames": 63,
+      "sitting_frames": 0,
+      "mean_box_centre_x": 427
+     }
+    }
+   },
+   "rule_0.70": {
+    "sitting_frames": 31,
+    "false_sitting_s": 1.29,
+    "false_sitting_frames": 31,
+    "per_track": {
+     "1": {
+      "frames": 231,
+      "sitting_frames": 31,
+      "mean_box_centre_x": 289
+     },
+     "4": {
+      "frames": 3,
+      "sitting_frames": 0,
+      "mean_box_centre_x": 315
+     },
+     "3": {
+      "frames": 70,
+      "sitting_frames": 0,
+      "mean_box_centre_x": 158
+     },
+     "5": {
+      "frames": 63,
+      "sitting_frames": 0,
+      "mean_box_centre_x": 427
+     }
+    }
+   }
+  },
+  "mixkit_48733": {
+   "group": "lying",
+   "frames": 915,
+   "video_s": 36.6,
+   "lying_labelled_s": 36.6,
+   "lying_covered_s": 36.6,
+   "lying_frames": 915,
+   "current": {
+    "sitting_frames": 0,
+    "false_sitting_s": 0,
+    "false_sitting_frames": 0,
+    "per_track": {
+     "1": {
+      "frames": 915,
+      "sitting_frames": 0,
+      "mean_box_centre_x": 318
+     },
+     "4": {
+      "frames": 65,
+      "sitting_frames": 0,
+      "mean_box_centre_x": 405
+     },
+     "5": {
+      "frames": 393,
+      "sitting_frames": 0,
+      "mean_box_centre_x": 450
+     }
+    }
+   },
+   "rule_0.70": {
+    "sitting_frames": 0,
+    "false_sitting_s": 0,
+    "false_sitting_frames": 0,
+    "per_track": {
+     "1": {
+      "frames": 915,
+      "sitting_frames": 0,
+      "mean_box_centre_x": 318
+     },
+     "4": {
+      "frames": 65,
+      "sitting_frames": 0,
+      "mean_box_centre_x": 405
+     },
+     "5": {
+      "frames": 393,
+      "sitting_frames": 0,
+      "mean_box_centre_x": 450
+     }
+    }
+   }
+  },
+  "upfall_cam1": {
+   "group": "seated",
+   "frames": 88,
+   "video_s": 5.02,
+   "seated_labelled_s": 5.0,
+   "seated_covered_s": 5.0,
+   "seated_frames": 88,
+   "current": {
+    "sitting_frames": 25,
+    "sitting_kept_s": 1.68,
+    "sitting_kept_frames": 25,
+    "per_track": {
+     "1": {
+      "frames": 88,
+      "sitting_frames": 25,
+      "mean_box_centre_x": 269
+     },
+     "3": {
+      "frames": 5,
+      "sitting_frames": 0,
+      "mean_box_centre_x": 261
+     }
+    }
+   },
+   "rule_0.70": {
+    "sitting_frames": 25,
+    "sitting_kept_s": 1.68,
+    "sitting_kept_frames": 25,
+    "per_track": {
+     "1": {
+      "frames": 88,
+      "sitting_frames": 25,
+      "mean_box_centre_x": 269
+     },
+     "3": {
+      "frames": 5,
+      "sitting_frames": 0,
+      "mean_box_centre_x": 261
+     }
+    }
+   }
+  },
+  "upfall_cam2": {
+   "group": "seated",
+   "frames": 88,
+   "video_s": 5.02,
+   "seated_labelled_s": 5.0,
+   "seated_covered_s": 5.0,
+   "seated_frames": 88,
+   "current": {
+    "sitting_frames": 82,
+    "sitting_kept_s": 4.68,
+    "sitting_kept_frames": 82,
+    "per_track": {
+     "1": {
+      "frames": 88,
+      "sitting_frames": 82,
+      "mean_box_centre_x": 218
+     },
+     "2": {
+      "frames": 88,
+      "sitting_frames": 67,
+      "mean_box_centre_x": 576
+     }
+    }
+   },
+   "rule_0.70": {
+    "sitting_frames": 82,
+    "sitting_kept_s": 4.68,
+    "sitting_kept_frames": 82,
+    "per_track": {
+     "1": {
+      "frames": 88,
+      "sitting_frames": 82,
+      "mean_box_centre_x": 218
+     },
+     "2": {
+      "frames": 88,
+      "sitting_frames": 67,
+      "mean_box_centre_x": 576
+     }
+    }
+   }
+  },
+  "mixkit_15774": {
+   "group": "seated",
+   "frames": 227,
+   "video_s": 7.57,
+   "seated_labelled_s": 7.57,
+   "seated_covered_s": 7.57,
+   "seated_frames": 227,
+   "current": {
+    "sitting_frames": 218,
+    "sitting_kept_s": 7.27,
+    "sitting_kept_frames": 218,
+    "per_track": {
+     "1": {
+      "frames": 227,
+      "sitting_frames": 218,
+      "mean_box_centre_x": 212
+     },
+     "2": {
+      "frames": 23,
+      "sitting_frames": 0,
+      "mean_box_centre_x": 581
+     }
+    }
+   },
+   "rule_0.70": {
+    "sitting_frames": 218,
+    "sitting_kept_s": 7.27,
+    "sitting_kept_frames": 218,
+    "per_track": {
+     "1": {
+      "frames": 227,
+      "sitting_frames": 218,
+      "mean_box_centre_x": 212
+     },
+     "2": {
+      "frames": 23,
+      "sitting_frames": 0,
+      "mean_box_centre_x": 581
+     }
+    }
+   }
+  },
+  "mixkit_12837": {
+   "group": "seated",
+   "frames": 265,
+   "video_s": 10.6,
+   "seated_labelled_s": 10.6,
+   "seated_covered_s": 10.6,
+   "seated_frames": 265,
+   "current": {
+    "sitting_frames": 0,
+    "sitting_kept_s": 0,
+    "sitting_kept_frames": 0,
+    "per_track": {
+     "1": {
+      "frames": 265,
+      "sitting_frames": 0,
+      "mean_box_centre_x": 402
+     }
+    }
+   },
+   "rule_0.70": {
+    "sitting_frames": 0,
+    "sitting_kept_s": 0,
+    "sitting_kept_frames": 0,
+    "per_track": {
+     "1": {
+      "frames": 265,
+      "sitting_frames": 0,
+      "mean_box_centre_x": 402
+     }
+    }
+   }
+  },
+  "mixkit_250": {
+   "group": "seated",
+   "frames": 340,
+   "video_s": 14.18,
+   "seated_labelled_s": 14.18,
+   "seated_covered_s": 14.18,
+   "seated_frames": 340,
+   "current": {
+    "sitting_frames": 0,
+    "sitting_kept_s": 0,
+    "sitting_kept_frames": 0,
+    "per_track": {
+     "1": {
+      "frames": 340,
+      "sitting_frames": 0,
+      "mean_box_centre_x": 324
+     }
+    }
+   },
+   "rule_0.70": {
+    "sitting_frames": 0,
+    "sitting_kept_s": 0,
+    "sitting_kept_frames": 0,
+    "per_track": {
+     "1": {
+      "frames": 340,
+      "sitting_frames": 0,
+      "mean_box_centre_x": 324
+     }
+    }
+   }
+  },
+  "mixkit_48751": {
+   "group": "seated",
+   "frames": 575,
+   "video_s": 23.0,
+   "seated_labelled_s": 23.0,
+   "seated_covered_s": 23.0,
+   "seated_frames": 575,
+   "current": {
+    "sitting_frames": 243,
+    "sitting_kept_s": 9.72,
+    "sitting_kept_frames": 243,
+    "sitting_kept_while_body_in_frame_s": 9.28,
+    "per_track": {
+     "1": {
+      "frames": 575,
+      "sitting_frames": 243,
+      "mean_box_centre_x": 324
+     }
+    }
+   },
+   "rule_0.70": {
+    "sitting_frames": 243,
+    "sitting_kept_s": 9.72,
+    "sitting_kept_frames": 243,
+    "sitting_kept_while_body_in_frame_s": 9.28,
+    "per_track": {
+     "1": {
+      "frames": 575,
+      "sitting_frames": 243,
+      "mean_box_centre_x": 324
+     }
+    }
+   }
+  },
+  "mixkit_12866": {
+   "group": "sit-down",
+   "frames": 219,
+   "video_s": 8.76,
+   "seated_labelled_s": 3.46,
+   "seated_covered_s": 3.46,
+   "seated_frames": 87,
+   "standing_labelled_s": 3.3,
+   "standing_covered_s": 3.3,
+   "standing_frames": 83,
+   "current": {
+    "sitting_frames": 50,
+    "sitting_kept_s": 1.98,
+    "sitting_kept_frames": 50,
+    "sitting_while_standing_s": 0.0,
+    "first_sitting_label_s": 7.12,
+    "sit_down_error_s": 0.72,
+    "sitting_stopped_s": 1.12,
+    "per_track": {
+     "1": {
+      "frames": 219,
+      "sitting_frames": 50,
+      "mean_box_centre_x": 354
+     },
+     "2": {
+      "frames": 3,
+      "sitting_frames": 0,
+      "mean_box_centre_x": 466
+     }
+    }
+   },
+   "rule_0.70": {
+    "sitting_frames": 50,
+    "sitting_kept_s": 1.98,
+    "sitting_kept_frames": 50,
+    "sitting_while_standing_s": 0.0,
+    "first_sitting_label_s": 7.12,
+    "sit_down_error_s": 0.72,
+    "sitting_stopped_s": 1.12,
+    "per_track": {
+     "1": {
+      "frames": 219,
+      "sitting_frames": 50,
+      "mean_box_centre_x": 354
+     },
+     "2": {
+      "frames": 3,
+      "sitting_frames": 0,
+      "mean_box_centre_x": 466
+     }
+    }
+   }
+  },
+  "mixkit_50764": {
+   "group": "sit-down",
+   "frames": 224,
+   "video_s": 9.34,
+   "seated_labelled_s": 7.14,
+   "seated_covered_s": 7.14,
+   "seated_frames": 171,
+   "current": {
+    "sitting_frames": 166,
+    "sitting_kept_s": 6.92,
+    "sitting_kept_frames": 166,
+    "first_sitting_label_s": 2.42,
+    "sit_down_error_s": 0.22,
+    "per_track": {
+     "1": {
+      "frames": 224,
+      "sitting_frames": 166,
+      "mean_box_centre_x": 271
+     }
+    }
+   },
+   "rule_0.70": {
+    "sitting_frames": 166,
+    "sitting_kept_s": 6.92,
+    "sitting_kept_frames": 166,
+    "first_sitting_label_s": 2.42,
+    "sit_down_error_s": 0.22,
+    "per_track": {
+     "1": {
+      "frames": 224,
+      "sitting_frames": 166,
+      "mean_box_centre_x": 271
+     }
+    }
+   }
+  },
+  "mixkit_26083": {
+   "group": "sit-down",
+   "frames": 268,
+   "video_s": 11.18,
+   "seated_labelled_s": 4.18,
+   "seated_covered_s": 4.18,
+   "seated_frames": 100,
+   "standing_labelled_s": 6.5,
+   "standing_covered_s": 6.5,
+   "standing_frames": 156,
+   "current": {
+    "sitting_frames": 0,
+    "sitting_kept_s": 0,
+    "sitting_kept_frames": 0,
+    "sitting_while_standing_s": 0,
+    "first_sitting_label_s": null,
+    "sit_down_error_s": null,
+    "per_track": {
+     "1": {
+      "frames": 268,
+      "sitting_frames": 0,
+      "mean_box_centre_x": 271
+     }
+    }
+   },
+   "rule_0.70": {
+    "sitting_frames": 0,
+    "sitting_kept_s": 0,
+    "sitting_kept_frames": 0,
+    "sitting_while_standing_s": 0,
+    "first_sitting_label_s": null,
+    "sit_down_error_s": null,
+    "per_track": {
+     "1": {
+      "frames": 268,
+      "sitting_frames": 0,
+      "mean_box_centre_x": 271
+     }
+    }
+   }
+  },
+  "mixkit_29328": {
+   "group": "sit-down",
+   "frames": 332,
+   "video_s": 13.85,
+   "seated_labelled_s": 8.45,
+   "seated_covered_s": 8.45,
+   "seated_frames": 202,
+   "current": {
+    "sitting_frames": 141,
+    "sitting_kept_s": 5.88,
+    "sitting_kept_frames": 141,
+    "first_sitting_label_s": 5.71,
+    "sit_down_error_s": 0.31,
+    "per_track": {
+     "1": {
+      "frames": 28,
+      "sitting_frames": 0,
+      "mean_box_centre_x": 136
+     },
+     "3": {
+      "frames": 313,
+      "sitting_frames": 141,
+      "mean_box_centre_x": 229
+     },
+     "4": {
+      "frames": 8,
+      "sitting_frames": 0,
+      "mean_box_centre_x": 23
+     },
+     "5": {
+      "frames": 2,
+      "sitting_frames": 0,
+      "mean_box_centre_x": 580
+     },
+     "7": {
+      "frames": 8,
+      "sitting_frames": 0,
+      "mean_box_centre_x": 64
+     },
+     "9": {
+      "frames": 1,
+      "sitting_frames": 0,
+      "mean_box_centre_x": 324
+     }
+    }
+   },
+   "rule_0.70": {
+    "sitting_frames": 137,
+    "sitting_kept_s": 5.71,
+    "sitting_kept_frames": 137,
+    "first_sitting_label_s": 5.71,
+    "sit_down_error_s": 0.31,
+    "per_track": {
+     "1": {
+      "frames": 28,
+      "sitting_frames": 0,
+      "mean_box_centre_x": 136
+     },
+     "3": {
+      "frames": 313,
+      "sitting_frames": 137,
+      "mean_box_centre_x": 229
+     },
+     "4": {
+      "frames": 8,
+      "sitting_frames": 0,
+      "mean_box_centre_x": 23
+     },
+     "5": {
+      "frames": 2,
+      "sitting_frames": 0,
+      "mean_box_centre_x": 580
+     },
+     "7": {
+      "frames": 8,
+      "sitting_frames": 0,
+      "mean_box_centre_x": 64
+     },
+     "9": {
+      "frames": 1,
+      "sitting_frames": 0,
+      "mean_box_centre_x": 324
+     }
+    }
+   }
+  },
+  "mixkit_16156": {
+   "group": "sit-down",
+   "frames": 673,
+   "video_s": 28.04,
+   "seated_labelled_s": 16.94,
+   "seated_covered_s": 16.94,
+   "seated_frames": 406,
+   "standing_labelled_s": 8.5,
+   "standing_covered_s": 8.5,
+   "standing_frames": 204,
+   "current": {
+    "sitting_frames": 3,
+    "sitting_kept_s": 0.0,
+    "sitting_kept_frames": 0,
+    "sitting_while_standing_s": 0.0,
+    "first_sitting_label_s": 10.62,
+    "sit_down_error_s": -0.47,
+    "per_track": {
+     "1": {
+      "frames": 655,
+      "sitting_frames": 3,
+      "mean_box_centre_x": 474
+     }
+    }
+   },
+   "rule_0.70": {
+    "sitting_frames": 3,
+    "sitting_kept_s": 0.0,
+    "sitting_kept_frames": 0,
+    "sitting_while_standing_s": 0.0,
+    "first_sitting_label_s": 10.62,
+    "sit_down_error_s": -0.47,
+    "per_track": {
+     "1": {
+      "frames": 655,
+      "sitting_frames": 3,
+      "mean_box_centre_x": 474
+     }
+    }
+   }
+  }
+ },
+ "totals": {
+  "all 18 clip views": {
+   "clips": 18,
+   "lying_labelled_s": 93.25,
+   "seated_labelled_s": 105.52,
+   "current": {
+    "false_sitting_s": 4.75,
+    "sitting_kept_s": 38.13
+   },
+   "rule_0.70": {
+    "false_sitting_s": 4.75,
+    "sitting_kept_s": 37.96
+   }
+  },
+  "UP-Fall pair counted once, camera 1": {
+   "clips": 17,
+   "lying_labelled_s": 93.25,
+   "seated_labelled_s": 100.52,
+   "current": {
+    "false_sitting_s": 4.75,
+    "sitting_kept_s": 33.45
+   },
+   "rule_0.70": {
+    "false_sitting_s": 4.75,
+    "sitting_kept_s": 33.28
+   }
+  },
+  "UP-Fall pair counted once, camera 2": {
+   "clips": 17,
+   "lying_labelled_s": 93.25,
+   "seated_labelled_s": 100.52,
+   "current": {
+    "false_sitting_s": 4.75,
+    "sitting_kept_s": 36.45
+   },
+   "rule_0.70": {
+    "false_sitting_s": 4.75,
+    "sitting_kept_s": 36.28
+   }
+  }
+ }
+}

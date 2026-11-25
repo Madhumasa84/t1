@@ -1,0 +1,110 @@
+{
+ "mixkit_3207": {
+  "path": "videos/stage2-unseen/mixkit_3207.mp4",
+  "source": "https://assets.mixkit.co/videos/3207/3207-720.mp4",
+  "sha256": "e0ea679da13e1f4bd5920aef50287f7d5c4bbe6b548966580520973000b366f3",
+  "frames": 260
+ },
+ "mixkit_42981": {
+  "path": "videos/stage2-unseen/mixkit_42981.mp4",
+  "source": "https://assets.mixkit.co/videos/42981/42981-720.mp4",
+  "sha256": "a4015d43b112699fd6d3e957dc6f9f565f6cdd7ab7cc0266ed7244cd0deae10c",
+  "frames": 230
+ },
+ "mixkit_42972": {
+  "path": "videos/stage2-unseen/mixkit_42972.mp4",
+  "source": "https://assets.mixkit.co/videos/42972/42972-720.mp4",
+  "sha256": "b05580dc4c654d83acd054f402e22307daf46c39a67c8271b324fe7fa9461875",
+  "frames": 181
+ },
+ "mixkit_31414": {
+  "path": "videos/stage2-unseen/mixkit_31414.mp4",
+  "source": "https://assets.mixkit.co/videos/31414/31414-720.mp4",
+  "sha256": "86dcc0714ab7511124e3a0af264f38bc310b1d2b608405f4547c8a8298434196",
+  "frames": 316
+ },
+ "mixkit_50754": {
+  "path": "videos/stage2-unseen/mixkit_50754.mp4",
+  "source": "https://assets.mixkit.co/videos/50754/50754-720.mp4",
+  "sha256": "149f78518c1f8dd18a1ee01feabc3750416f16ca0e9c06a19cde6d8c03baaf10",
+  "frames": 306
+ },
+ "mixkit_31399": {
+  "path": "videos/stage2-unseen/mixkit_31399.mp4",
+  "source": "https://assets.mixkit.co/videos/31399/31399-720.mp4",
+  "sha256": "19192a0a241598de743003cf62eac7730fe8e2818b8bec6523c1307b91804276",
+  "frames": 242
+ },
+ "mixkit_48733": {
+  "path": "videos/stage2-unseen/mixkit_48733.mp4",
+  "source": "https://assets.mixkit.co/videos/48733/48733-720.mp4",
+  "sha256": "38f422450309aecc7a02cc1910a9c942e8d671e933bc8df224e784771b00fc8a",
+  "frames": 915
+ },
+ "upfall_cam1": {
+  "path": "videos/up-fall/S1-A8-T1/camera1-first5s.mp4",
+  "source": "https://sites.google.com/up.edu.mx/har-up/ (subject 1, activity 8, trial 1; see SOURCE.txt beside the file)",
+  "sha256": "862a335b54c87b6bcae6b10377663db7f7906abe4478faa94c2425ce8d8c9db3",
+  "frames": 88
+ },
+ "upfall_cam2": {
+  "path": "videos/up-fall/S1-A8-T1/camera2-first5s.mp4",
+  "source": "https://sites.google.com/up.edu.mx/har-up/ (subject 1, activity 8, trial 1; see SOURCE.txt beside the file)",
+  "sha256": "f50ef0a8af6f4424e7029f07bc792efe899d43ecf670cf240cea0e20778e8c80",
+  "frames": 88
+ },
+ "mixkit_15774": {
+  "path": "videos/stage2-unseen/mixkit_15774.mp4",
+  "source": "https://assets.mixkit.co/videos/15774/15774-720.mp4",
+  "sha256": "c6e0aa50de053df2509d0d00647b2f3a8888126d5b97a69cffeb91a5bb285721",
+  "frames": 227
+ },
+ "mixkit_12837": {
+  "path": "videos/stage2-unseen/mixkit_12837.mp4",
+  "source": "https://assets.mixkit.co/videos/12837/12837-720.mp4",
+  "sha256": "2788f1ca2cdc4d38e6f7b048e90b2d4849562dde8dd5cc03903465342af58b13",
+  "frames": 265
+ },
+ "mixkit_250": {
+  "path": "videos/stage2-unseen/mixkit_250.mp4",
+  "source": "https://assets.mixkit.co/videos/250/250-720.mp4",
+  "sha256": "0e1bc0f821ef2c264e01b6d47b49d3338bf4f159127e7c6637ff79644b8e921a",
+  "frames": 340
+ },
+ "mixkit_48751": {
+  "path": "videos/stage2-unseen/mixkit_48751.mp4",
+  "source": "https://assets.mixkit.co/videos/48751/48751-720.mp4",
+  "sha256": "70d0d12be25b2c0518c704d70bf8826b91473b1e64fea9a6fd30643b17bc2079",
+  "frames": 575
+ },
+ "mixkit_12866": {
+  "path": "videos/stage2-unseen/mixkit_12866.mp4",
+  "source": "https://assets.mixkit.co/videos/12866/12866-720.mp4",
+  "sha256": "7f08e531a637bbbf2f50aa1fc92a3027072bc152dca424bd4efdab693a3ea752",
+  "frames": 219
+ },
+ "mixkit_50764": {
+  "path": "videos/stage2-unseen/mixkit_50764.mp4",
+  "source": "https://assets.mixkit.co/videos/50764/50764-720.mp4",
+  "sha256": "c5f6cfc67ca8c3ee4dc4f1dd7b33bedadec723f05587a7314de20ad6bd307c02",
+  "frames": 224
+ },
+ "mixkit_26083": {
+  "path": "videos/stage2-unseen/mixkit_26083.mp4",
+  "source": "https://assets.mixkit.co/videos/26083/26083-720.mp4",
+  "sha256": "f321a9a376b5f763f75b1bbb16a1cdfe405efcf615b03ecebb0e95771c88325c",
+  "frames": 268
+ },
+ "mixkit_29328": {
+  "path": "videos/stage2-unseen/mixkit_29328.mp4",
+  "source": "https://assets.mixkit.co/videos/29328/29328-720.mp4",
+  "sha256": "e5efbcf6ece85e46067fc5a41f3bd5624deabf4a3a65ca9ab71f92a60cb0f524",
+  "frames": 332
+ },
+ "mixkit_16156": {
+  "path": "videos/stage2-unseen/mixkit_16156.mp4",
+  "source": "https://assets.mixkit.co/videos/16156/16156-720.mp4",
+  "sha256": "d74830aa1fc70638511299d93f58a3d01fda5e624e7337b0c4865ba4b2b13cd7",
+  "frames": 673
+ }
+}

@@ -63,6 +63,44 @@ Use the existing posture estimator to record sitting intervals for each visible 
 
 **Stand-up check.** Reprocessing every third frame of the existing laptop preview recording at 10 samples per second yielded 2.20 seconds labeled sitting. The last sitting interval ended at 20.30 seconds, during the visible rise (about 20.2–21.0 seconds). This recording includes the original preview overlays. The same sampling on the walking clip `v3.mp4` produced zero sitting labels. A matched recording of the cushion scene from a wider, slightly side-on view with the legs visible is still needed to measure the effect of camera placement.
 
+**False sitting while lying down.** In `videos/v10.mp4` two people lie under a duvet for the whole 20.56 seconds. The pipeline labeled 162 of 514 frames sitting (159 on one track ID, 3 on another) and none lying down. It tracked the two people as one in 430 frames, but the merged box does not cause the label: sitting persisted in 62 of the 83 frames where they had separate boxes. The pose model places one knee beside the hip under the duvet, and the flat-thigh rule in `posture.py` accepts that knee as sitting with no lower leg in view. All 352 raw sitting calls came from that rule. The lying rule cannot fire because the torso points up the image. `v4.mp4` earns its sitting labels from the same evidence, a guessed knee with the legs out of frame. Requiring a visible lower leg (a confident ankle below the knee) removed all false sitting in `v10.mp4`, but it also removed all 83 sitting frames in `v4.mp4` and moved the first sitting label in `v6.mp4` from 7.68 to 12.0 seconds. The code is unchanged.
+
+**Pose-confidence rule rejected (25 November 2026).** On the development clips, counting a flat thigh as sitting only when the matched pose box confidence is at least 0.70 removed all 162 false frames in `v10.mp4` and kept every sitting frame in `v4.mp4` and `v6.mp4`. A crop of `v10.mp4` about 2.7 times closer still left 13 false frames. We then tested the fixed 0.70 threshold on 18 clips it had never been run on: 16 from Mixkit and the two 5-second UP-Fall views in `videos/up-fall/S1-A8-T1`. Clips were chosen by title and thumbnail. Lying, seated, sit-down and stand-up times were hand labeled from timestamped frames before either version ran. Both versions ran through the saved-video pipeline at `ed33d4a` on identical model outputs.
+
+The rule made no useful difference, so do not adopt it. False sitting while lying under covers stayed at 4.75 of 93.25 seconds. Sitting kept went from 38.13 to 37.96 of 105.52 seated seconds. Sit-down timing was identical in every clip. The poses behind the false labels were confident, with a median pose confidence of 0.84 and 0.87 in the two night-time couple clips.
+
+| Lying under covers | Scene | Lying (s) | False sitting, current code (s) | With 0.70 rule (s) |
+|---|---|---|---|---|
+| Mixkit 3207 | Couple, bright, close overhead view | 10.83 | 0 | 0 |
+| Mixkit 42981 | Couple at night, overhead | 9.59 | 1.54 | 1.54 |
+| Mixkit 42972 | Couple on their sides at night | 7.55 | 1.92 | 1.92 |
+| Mixkit 31414 | Man, low side view, tosses the duvet | 13.18 | 0 | 0 |
+| Mixkit 50754 | Man, before he sits up at 7.2 s | 7.20 | 0 | 0 |
+| Mixkit 31399 | Woman under a duvet, before she sits up at 8.3 s | 8.30 | 1.29 | 1.29 |
+| Mixkit 48733 | Man on his back at night | 36.60 | 0 | 0 |
+
+| Seated | Scene | Seated (s) | Sitting kept, current code (s) | With 0.70 rule (s) | Sit-down: labeled → first sitting label (s) |
+|---|---|---|---|---|---|
+| UP-Fall camera 1 | Frontal, full body on a chair | 5.00 | 1.68 | 1.68 | none in clip |
+| UP-Fall camera 2 | Side view, second seated person behind | 5.00 | 4.68 | 4.68 | none in clip |
+| Mixkit 15774 | Armchair, legs crossed | 7.57 | 7.27 | 7.27 | none in clip |
+| Mixkit 12837 | Park bench, frontal, shins in view | 10.60 | 0 | 0 | none in clip |
+| Mixkit 250 | Couch, lap and legs out of frame | 14.18 | 0 | 0 | none in clip |
+| Mixkit 48751 | Armchair with a blanket, camera pushes in | 23.00 | 9.72 | 9.72 | none in clip |
+| Mixkit 12866 | Rises from an armchair and sits again | 3.46 | 1.98 | 1.98 | 6.4 → 7.12 (+0.72) |
+| Mixkit 50764 | Sits on a sofa with legs stretched out | 7.14 | 6.92 | 6.92 | 2.2 → 2.42 (+0.22) |
+| Mixkit 26083 | Sits at a table, legs hidden | 4.18 | 0 | 0 | 7.0 → never |
+| Mixkit 29328 | Sits behind a pizza box, head out of frame | 8.45 | 5.88 | 5.71 | 5.4 → 5.71 (+0.31) |
+| Mixkit 16156 | Sits on the ground, seen from behind | 16.94 | 0 | 0 | 11.1 → 10.62, three frames during the squat, then never |
+
+Other results from the same runs, identical in both versions. In Mixkit 12866 the first sitting interval ended at 1.12 seconds against a labeled stand-up at 1.1 seconds. No frame was labeled sitting during the labeled standing intervals in Mixkit 12866, 26083 and 16156. In Mixkit 48751 the hips leave the frame at about 9.6 seconds, and 9.28 of those 9.6 seconds were labeled sitting. The frontal bench clip Mixkit 12837 had 22 frames labeled standing while the man sat. Lying down was labeled in Mixkit 31414, 50754 and 48733, and for five frames in Mixkit 31399 after the woman had sat up.
+
+How the totals are counted. They add the 18 clip views, and every labeled second is covered by processed frames: 93.25 lying seconds and 105.52 seated seconds, matching `stage2_checks/labels.json`. A frame counts as sitting when any track is labeled sitting, so it is counted once however many people are in view. The two UP-Fall files are simultaneous camera views of one participant for the same 5 seconds. They are scored as two clips and add 10.00 seated seconds and 6.36 kept seconds for one 5-second performance. With the pair counted once, the seated total is 100.52 seconds, with 33.45 kept using camera 1 or 36.45 using camera 2 (33.28 or 36.28 with the rule). In camera 2 the participant accounts for all 82 sitting frames. The second seated person was labeled sitting on 67 of those same frames and adds no time.
+
+Scored afterwards on the same recordings, and not part of the comparison planned before the runs, the visible-lower-leg rule removed all 114 false sitting frames in the lying clips. It cut Mixkit 29328 from 141 to 5 sitting frames and Mixkit 48751 from 243 to 186, and left the other seated clips unchanged. These figures came from full joint traces that were not kept, so `stage2_checks` does not reproduce them. The rule still needs its own test on fresh labeled clips before any decision.
+
+To reproduce the tables, run `python stage2_checks/score.py --check`. The folder holds the hand labels, the per-frame labels from both versions, the clip checksums and a script that reruns both versions. The Mixkit clips are in `videos/stage2-unseen/` and download from `https://assets.mixkit.co/videos/ID/ID-720.mp4`. Videos stay on this machine and out of the repository. Stage 2 stays open: the false sitting under covers, the missed sitting behind tables and in frontal views, and the two-person check remain unresolved.
+
 ## Stage 3 — Assign activity to household members
 
 - [ ] `feature/household-profiles`
