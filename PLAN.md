@@ -55,6 +55,14 @@ Use the existing posture estimator to record sitting intervals for each visible 
 
 **Ready to merge when** the intervals agree with hand-labeled sit-down and stand-up times within the tolerance agreed for the clips. Include two people in different postures and a person partly hidden by furniture.
 
+**Clip selection in progress.** Use `videos/v6.mp4` for development. At half-second sampling, the person lowers onto the sofa around 7.5–8.0 seconds and is visibly seated by 8.0 seconds. The cushion partly obscures the lower body. Reserve `videos/v4.mp4` as a separate check for someone already sitting at the start. An independent clip with a visible stand-up and two people in different postures is still needed for the final check.
+
+**Proposed timing tolerance.** Allow one second on either side of a hand-labeled transition. Report missed or extra intervals separately. Exclude time labeled unclear from sitting totals.
+
+**Posture diagnosis.** In the full-frame-rate model replay of `v4.mp4`, 83 of 229 frames counted as sitting (2.77 of 7.64 seconds). During the 1.90–4.40 second gap both predicted knees passed the confidence cutoff on all 75 frames. At 3.00 seconds the knee markers landed near the elbows, with the cushion obscuring the lap. Lowering the cutoff would not fix this error. In `v6.mp4` the first sitting label appeared at 7.68 seconds, and the model counted 12.04 seconds seated before the 21.00-second ending.
+
+**Stand-up check.** Reprocessing every third frame of the existing laptop preview recording at 10 samples per second yielded 2.20 seconds labeled sitting. The last sitting interval ended at 20.30 seconds, during the visible rise (about 20.2–21.0 seconds). This recording includes the original preview overlays. The same sampling on the walking clip `v3.mp4` produced zero sitting labels. A matched recording of the cushion scene from a wider, slightly side-on view with the legs visible is still needed to measure the effect of camera placement.
+
 ## Stage 3 — Assign activity to household members
 
 - [ ] `feature/household-profiles`
