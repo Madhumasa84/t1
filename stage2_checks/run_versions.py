@@ -25,8 +25,8 @@ from math import hypot
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-sys.path.insert(0, str(HERE.parent))
-import compare_video as video  # noqa: E402
+sys.path.insert(0, str(HERE.parent / "src"))
+from home_tower import compare_video as video  # noqa: E402
 
 GATE = .70
 JOINT_CONFIDENCE, UNCLEAR = video.JOINT_CONFIDENCE, video.UNCLEAR

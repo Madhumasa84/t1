@@ -8,7 +8,10 @@ from zipfile import ZipFile
 
 from PIL import Image, ImageDraw
 
-from evaluate import COMPARISON, FULL_SAMPLE, MODELS
+if __package__:
+    from .evaluate import COMPARISON, FULL_SAMPLE, MODELS
+else:
+    from evaluate import COMPARISON, FULL_SAMPLE, MODELS
 
 
 def prepare():

@@ -4,7 +4,7 @@ from pathlib import Path
 from ultralytics import YOLO
 
 
-folder = Path(__file__).resolve().parent
+folder = Path(__file__).resolve().parents[1]
 parser = ArgumentParser(description="Draw furniture detections on a room photo.")
 parser.add_argument("photo", nargs="?", default="room.jpg", help="Photo filename inside t1")
 photo = folder / parser.parse_args().photo

@@ -11,7 +11,7 @@ from ultralytics import YOLO
 from ultralytics.data.converter import coco80_to_coco91_class
 
 
-FOLDER = Path(__file__).resolve().parent
+FOLDER = Path(__file__).resolve().parents[1]
 SAMPLE = FOLDER.parent / "datasets" / "t1_coco50"
 OUTPUT = FOLDER / "coco50_predictions"
 FULL_SAMPLE = FOLDER.parent / "datasets" / "t1_coco2017" / "val2017"

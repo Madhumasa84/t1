@@ -164,7 +164,7 @@ def main():
     parser.add_argument("--detector", choices=video.MODELS[:2], default=video.POSE_GATE_MODEL)
     parser.add_argument("--vacancy-grace", type=presence.grace_seconds, default=presence.DEFAULT_GRACE,
                         metavar="SECONDS")
-    parser.add_argument("--history", type=Path, default=Path(__file__).with_name("room-presence.sqlite3"))
+    parser.add_argument("--history", type=Path, default=video.PROJECT_ROOT / "room-presence.sqlite3")
     args = parser.parse_args()
     if not 1024 <= args.port <= 65535:
         parser.error("--port must be between 1024 and 65535")

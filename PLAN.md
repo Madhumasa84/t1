@@ -30,7 +30,7 @@ mkdir -p ../weights
 for model in yolo26s yolo11n-pose; do
   curl --fail --location --output "../weights/$model.pt" "https://github.com/ultralytics/assets/releases/download/v8.4.0/$model.pt"
 done
-.venv/bin/python -m pytest -q test_video_baseline.py
+.venv/bin/python -m pytest -q tests/test_video_baseline.py
 ```
 
 **Accepted development check.** The household tested the live laptop webcam through the browser. The final baseline suite passed 17 tests, including 101 simulated native-camera frames. We agreed to defer the physical native-camera check to production camera commissioning. At that point, verify the real feed continues updating past frame 100.

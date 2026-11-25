@@ -7,13 +7,13 @@ import pytest
 import torch
 from ultralytics.engine.results import Results
 
-import compare_video as video
+from home_tower import compare_video as video
 
 
 @pytest.mark.parametrize("output_name", ["one_annotated.mp4", "one_annotated.partial.mp4", "one_scores.json"])
 @pytest.mark.parametrize("alias", ["direct", "symlink", "hardlink"])
 def test_batch_rejects_input_collision_before_processing(tmp_path, monkeypatch, output_name, alias):
-    out = tmp_path / "t1" / "pipeline_results"
+    out = tmp_path / "pipeline_results"
     out.mkdir(parents=True)
     first = tmp_path / "one.mp4"
     first.write_bytes(b"first input")
@@ -25,7 +25,7 @@ def test_batch_rejects_input_collision_before_processing(tmp_path, monkeypatch, 
     if alias == "hardlink":
         destination.hardlink_to(second)
     before = set(out.iterdir())
-    monkeypatch.setattr(video, "ROOT", tmp_path)
+    monkeypatch.setattr(video, "PROJECT_ROOT", tmp_path)
     monkeypatch.setattr(video, "load_models", lambda *_: pytest.fail("collision missed"))
     monkeypatch.setattr(sys, "argv", ["compare_video.py", "--pipeline", str(first), str(second)])
     with pytest.raises(SystemExit) as error:
@@ -105,7 +105,7 @@ def test_native_preview_survives_progress_log(monkeypatch, capsys):
 
 @pytest.mark.parametrize("module", [False, True])
 def test_camera_entry_points(module):
-    project = Path(__file__).resolve().parent
+    project = Path(video.__file__).resolve().parent
     command = ["-m", f"{project.name}.camera_server"] if module else [str(project / "camera_server.py")]
     run = subprocess.run([sys.executable, *command, "--help"], cwd=project.parent,
                          capture_output=True, text=True, check=True)

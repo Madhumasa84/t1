@@ -30,7 +30,7 @@ else:
     from presence import DEFAULT_GRACE, LIVE_GAP_SECONDS, UNAVAILABLE, RoomPresence, grace_seconds
     from posture import HOLD_SECONDS, JOINT_CONFIDENCE, UNCLEAR, PostureHold, estimate_posture
 
-ROOT = Path(__file__).resolve().parents[1]
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
 MODELS = ("yolo26n", "yolo26s", "yolo11n-pose")
 CLASSES = {"person", "chair", "couch", "bed", "dining table"}
 POSE_GATE_MODEL = "yolo26s"
@@ -43,7 +43,7 @@ PREVIEW_WINDOW = "Home Tower preview"
 def load_models(names):
     models = []
     for name in names:
-        weights = ROOT / "weights" / f"{name}.pt"
+        weights = PROJECT_ROOT.parent / "weights" / f"{name}.pt"
         if not weights.is_file():
             raise FileNotFoundError(weights)
         model = YOLO(weights)
@@ -385,7 +385,7 @@ def main():
         parser.error("--detector is available for single-view processing and previews")
     output = None
     if not preview:
-        output = ROOT / "t1" / ("pipeline_results" if pipeline else "video_posture")
+        output = PROJECT_ROOT / ("pipeline_results" if pipeline else "video_posture")
         if args.detector != POSE_GATE_MODEL:
             output = output / args.detector
         try:
