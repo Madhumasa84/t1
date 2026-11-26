@@ -1,0 +1,40 @@
+{
+  "_note": "Hand labels written at 2026-11-26T09:11Z UTC from timestamped frame sheets (0.5 s, 0.2 s and single-frame steps), before any detector, pose or posture model ran on this clip. Seconds from clip start. One continuous shot (largest ffmpeg scdet score below 0.5 percent). The estimator and interval rules are those of feature/sitting-time at 9a35802. One person only: this clip tests one timer, not the two-person questions.",
+  "clip": {
+    "path": "videos/stage2-two-person/vv3.mp4",
+    "source": "Supplied locally by the user on 26 November 2026; origin not stated. Kept on this machine only.",
+    "container_creation_time": "2021-06-17T23:48:16Z",
+    "sha256": "efeb733e90e597423a3271f3e59511a8248d2831ec4cd249d904f19a026c58ee",
+    "frames": 376,
+    "fps": 23.976,
+    "seconds": 15.7,
+    "size": "1080x1920 portrait"
+  },
+  "people": {
+    "A": {
+      "who": "man in a white T-shirt and green trousers, barefoot",
+      "seated": [
+        [
+          8.9,
+          15.7
+        ]
+      ],
+      "sit_down": 8.9,
+      "standing": [
+        [
+          4.0,
+          8.9
+        ]
+      ],
+      "out_of_view": [
+        [
+          0.0,
+          4.0
+        ]
+      ],
+      "notes": "Empty room with a chair until he walks in from the left at about 4.0 s. Turns the chair round at 7.0-7.8 s, straddles it from 8.0 s, lowers from about 8.4 s; hips pass the top of the chair back at 8.75-8.84 s and are on the seat with thighs level by 8.92-9.00 s. Sits astride the chair facing the camera to the end, so the chair back covers his pelvis; thighs, knees and feet stay in view."
+    }
+  },
+  "identity_rule": "Decided before the run. One person is in view, so every pipeline box belongs to A; any extra track is reported.",
+  "pass": "Each labeled transition moves A's timer within 1 s of the labeled time (stop at a stand-up, start at a sit-down). Sitting while labeled standing is reported as gained time; seated time not counted is reported as lost time, by the first step that failed."
+}

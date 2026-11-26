@@ -1,0 +1,51 @@
+{
+  "interval_recording_matches_frame_labels": true,
+  "people": {
+    "A": {
+      "who": "man in a jacket and dark trousers holding a white cane, on a wooden chair beside a table",
+      "track_ids": [
+        "1"
+      ],
+      "expected_sitting_seconds": 10.92,
+      "sitting_seconds_counted_on_this_person": 10.6,
+      "sitting_seconds_on_own_tracks": 10.6,
+      "missed_seconds_by_first_failing_step": {
+        "posture: hold after a label change": 0.32
+      },
+      "sitting_seconds_while_not_seated": 0,
+      "while_seated": {
+        "frames_with_a_box": 273,
+        "boxes_reaching_the_bottom_edge": 0,
+        "frames_with_a_pose": 273,
+        "frames_with_a_hip_at_or_above_cutoff": 273,
+        "frames_with_a_knee_at_or_above_cutoff": 273,
+        "median_best_hip_confidence": 1.0,
+        "median_best_knee_confidence": 1.0
+      }
+    }
+  },
+  "tracks": {
+    "1": {
+      "frames_by_person": {
+        "A": 273
+      },
+      "sitting_seconds_by_person": {
+        "A": 10.6
+      },
+      "person": "A",
+      "sitting_seconds_on_another_person": 0,
+      "sitting_seconds": 10.6,
+      "unclear_seconds": 0.32,
+      "sitting_intervals": [
+        [
+          0.32,
+          10.92
+        ]
+      ]
+    }
+  },
+  "sitting_seconds_on_merged_boxes": 0.0,
+  "sitting_seconds_on_a_track_of_another_person": 0,
+  "transitions": [],
+  "other_timers": []
+}

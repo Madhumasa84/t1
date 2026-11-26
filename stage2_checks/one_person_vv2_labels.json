@@ -1,0 +1,28 @@
+{
+  "_note": "Hand labels written at 2026-11-26T09:11Z UTC from timestamped frame sheets (0.5 s, 0.2 s and single-frame steps), before any detector, pose or posture model ran on this clip. Seconds from clip start. One continuous shot (largest ffmpeg scdet score below 0.5 percent). The estimator and interval rules are those of feature/sitting-time at 9a35802. One person only: this clip tests one timer, not the two-person questions.",
+  "clip": {
+    "path": "videos/stage2-two-person/vv2.mp4",
+    "source": "Supplied locally by the user on 26 November 2026; origin not stated. Kept on this machine only.",
+    "container_creation_time": "2021-01-26T23:30:51Z",
+    "sha256": "80ecf80dcc73eabb9a0cc636153c492b56dcb11f4c35672b586c4b2076cbf8fc",
+    "frames": 273,
+    "fps": 25,
+    "seconds": 10.92,
+    "size": "2160x3840 portrait"
+  },
+  "people": {
+    "A": {
+      "who": "man in a jacket and dark trousers holding a white cane, on a wooden chair beside a table",
+      "seated": [
+        [
+          0.0,
+          10.92
+        ]
+      ],
+      "standing": [],
+      "notes": "Seated facing the camera for the whole clip, feet, knees and hips in view. Slight handheld camera drift."
+    }
+  },
+  "identity_rule": "Decided before the run. One person is in view, so every pipeline box belongs to A; any extra track is reported.",
+  "pass": "Each labeled transition moves A's timer within 1 s of the labeled time (stop at a stand-up, start at a sit-down). Sitting while labeled standing is reported as gained time; seated time not counted is reported as lost time, by the first step that failed."
+}

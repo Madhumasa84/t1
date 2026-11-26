@@ -1,0 +1,65 @@
+{
+  "interval_recording_matches_frame_labels": true,
+  "people": {
+    "A": {
+      "who": "man in a white T-shirt and green trousers, barefoot",
+      "track_ids": [
+        "1"
+      ],
+      "expected_sitting_seconds": 6.8,
+      "sitting_seconds_counted_on_this_person": 3.754,
+      "sitting_seconds_on_own_tracks": 3.794,
+      "missed_seconds_by_first_failing_step": {
+        "posture: estimator said unclear": 2.669,
+        "posture: hold after a label change": 0.334
+      },
+      "sitting_seconds_while_not_seated": 0.042,
+      "while_seated": {
+        "frames_with_a_box": 162,
+        "boxes_reaching_the_bottom_edge": 0,
+        "frames_with_a_pose": 162,
+        "frames_with_a_hip_at_or_above_cutoff": 162,
+        "frames_with_a_knee_at_or_above_cutoff": 162,
+        "median_best_hip_confidence": 1.0,
+        "median_best_knee_confidence": 0.99
+      }
+    }
+  },
+  "tracks": {
+    "1": {
+      "frames_by_person": {
+        "A": 269
+      },
+      "sitting_seconds_by_person": {
+        "A": 3.796
+      },
+      "person": "A",
+      "sitting_seconds_on_another_person": 0,
+      "sitting_seconds": 3.794,
+      "unclear_seconds": 4.172,
+      "sitting_intervals": [
+        [
+          8.634,
+          8.675
+        ],
+        [
+          9.218,
+          12.971
+        ]
+      ]
+    }
+  },
+  "sitting_seconds_on_merged_boxes": 0.0,
+  "sitting_seconds_on_a_track_of_another_person": 0,
+  "transitions": [
+    {
+      "person": "A",
+      "kind": "sit_down",
+      "labeled": 8.9,
+      "timer_starts": 8.634,
+      "error_seconds": -0.266,
+      "within_tolerance": true
+    }
+  ],
+  "other_timers": []
+}

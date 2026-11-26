@@ -85,21 +85,26 @@
   },
   "sitting_seconds_on_merged_boxes": 0.0,
   "sitting_seconds_on_a_track_of_another_person": 0,
-  "standing_timer": {
-    "person": "B",
-    "labeled_stand_up": 6.7,
-    "last_sitting_interval_ends": null,
-    "error_seconds": null,
-    "within_tolerance": false,
-    "sitting_after_window": []
-  },
-  "seated_timer": {
-    "person": "A",
-    "window": [
-      5.7,
-      7.7
-    ],
-    "sitting_intervals_overlapping_window": [],
-    "kept_counting": false
-  }
+  "transitions": [
+    {
+      "person": "B",
+      "kind": "stand_up",
+      "labeled": 6.7,
+      "timer_stops": null,
+      "error_seconds": null,
+      "within_tolerance": false
+    }
+  ],
+  "other_timers": [
+    {
+      "person": "A",
+      "during": "B stand_up at 6.7",
+      "window": [
+        5.7,
+        7.7
+      ],
+      "sitting_intervals_overlapping_window": [],
+      "kept_counting": false
+    }
+  ]
 }

@@ -1,0 +1,60 @@
+{
+  "interval_recording_matches_frame_labels": true,
+  "people": {
+    "A": {
+      "who": "elderly man seen in silhouette against a curtained window, with a walking cane, on a high-backed chair",
+      "track_ids": [
+        "1"
+      ],
+      "expected_sitting_seconds": 11.5,
+      "sitting_seconds_counted_on_this_person": 11.2,
+      "sitting_seconds_on_own_tracks": 12.04,
+      "missed_seconds_by_first_failing_step": {
+        "posture: hold after a label change": 0.32
+      },
+      "sitting_seconds_while_not_seated": 0.84,
+      "while_seated": {
+        "frames_with_a_box": 288,
+        "boxes_reaching_the_bottom_edge": 0,
+        "frames_with_a_pose": 288,
+        "frames_with_a_hip_at_or_above_cutoff": 288,
+        "frames_with_a_knee_at_or_above_cutoff": 288,
+        "median_best_hip_confidence": 1.0,
+        "median_best_knee_confidence": 0.99
+      }
+    }
+  },
+  "tracks": {
+    "1": {
+      "frames_by_person": {
+        "A": 906
+      },
+      "sitting_seconds_by_person": {
+        "A": 12.04
+      },
+      "person": "A",
+      "sitting_seconds_on_another_person": 0,
+      "sitting_seconds": 12.04,
+      "unclear_seconds": 1.32,
+      "sitting_intervals": [
+        [
+          0.32,
+          12.36
+        ]
+      ]
+    }
+  },
+  "sitting_seconds_on_merged_boxes": 0.0,
+  "sitting_seconds_on_a_track_of_another_person": 0,
+  "transitions": [
+    {
+      "person": "A",
+      "kind": "stand_up",
+      "labeled": 11.5,
+      "timer_stops": 12.36,
+      "error_seconds": 0.86,
+      "within_tolerance": true
+    }
+  ],
+  "other_timers": []
+}
